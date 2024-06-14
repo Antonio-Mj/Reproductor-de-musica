@@ -65,13 +65,29 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:background="@drawable/ic_norepetir"
-        android:onClick="Reproducir"
+        android:onClick="Repetir"
         android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_anterior"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_random"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/norandom"
+        android:onClick="Random"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_anterior"
+        app:layout_constraintHorizontal_bias="0.354"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.427" />
+
 
     <ImageView
         android:id="@+id/imageView"
@@ -110,12 +126,13 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Botón de Me gusta"
         android:src="@drawable/nolike"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.927"
+        app:layout_constraintHorizontal_bias="0.956"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteY="267dp" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.418"
+        tools:ignore="MissingConstraints" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
