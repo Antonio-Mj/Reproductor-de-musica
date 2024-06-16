@@ -8,9 +8,9 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -23,11 +23,12 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button play_pause, btn_repetir, btn_anterior, btn_siguiente, btn_detener, btn_random, btn_like;
+    Button play_pause, btn_repetir, btn_anterior, btn_siguiente, btn_detener, btn_random, btn_like, btn_addlist;
     SeekBar seekBar, volumeBar;
     ImageView iv;
     int posicion = 0;
-    MediaPlayer[] vectormp = new MediaPlayer[8];
+    MediaPlayer[] vectormp = new MediaPlayer[10];
+    int position = 0;
     Handler handler = new Handler();
     boolean isLiked = false;
     boolean isRandom = false;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         btn_siguiente = findViewById(R.id.btn_siguiente);
         btn_detener = findViewById(R.id.btn_detener);
         btn_like = findViewById(R.id.btn_like);
+        btn_addlist=findViewById(R.id.btn_addlist);
         btn_random = findViewById(R.id.btn_random);
         seekBar = findViewById(R.id.seekBar);
         volumeBar = findViewById(R.id.volumeBar);
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         btn_siguiente.setOnClickListener(this::Siguiente);
         btn_detener.setOnClickListener(this::Stop);
         btn_random.setOnClickListener(this::Random);
+        btn_addlist.setOnClickListener(this::AddToList);
 
         // Configuración del volumen inicial y su control
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -177,16 +180,23 @@ public class MainActivity extends AppCompatActivity {
 
     // Método para repetir o no repetir la canción
     public void Repetir(View view) {
+        Log.d("Repetir", "Método Repetir llamado");
         if (vectormp[posicion] != null) {
+            Log.d("Repetir", "MediaPlayer no es nulo");
             if (vectormp[posicion].isLooping()) {
+                Log.d("Repetir", "MediaPlayer está en modo de repetición");
                 vectormp[posicion].setLooping(false);
                 btn_repetir.setBackgroundResource(R.drawable.repeat);
                 Toast.makeText(this, "No repetir", Toast.LENGTH_SHORT).show();
             } else {
+                Log.d("Repetir", "MediaPlayer no está en modo de repetición");
                 vectormp[posicion].setLooping(true);
                 btn_repetir.setBackgroundResource(R.drawable.repeat_1);
                 Toast.makeText(this, "Repetir", Toast.LENGTH_SHORT).show();
             }
+        } else {
+            Log.d("Repetir", "MediaPlayer es nulo");
+            Toast.makeText(this, "No hay una canción cargada", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -259,14 +269,16 @@ public class MainActivity extends AppCompatActivity {
 
     // Método para cambiar entre modo aleatorio y no aleatorio
     public void Random(View view) {
-        isRandom = !isRandom;
-        if (isRandom) {
-            btn_random.setBackgroundResource(R.drawable.random_on);
-            Toast.makeText(this, "Modo aleatorio activado", Toast.LENGTH_SHORT).show();
-        } else {
-            btn_random.setBackgroundResource(R.drawable.random_off);
-            Toast.makeText(this, "Modo aleatorio desactivado", Toast.LENGTH_SHORT).show();
-            playedPositions.clear();
+        if (vectormp[posicion] != null) {
+            if (vectormp[posicion].isLooping()) {
+                vectormp[posicion].setLooping(false);
+                btn_random.setBackgroundResource(R.drawable.random_on);
+                Toast.makeText(this, "Modo aleatorio activado", Toast.LENGTH_SHORT).show();
+            } else {
+                vectormp[posicion].setLooping(true);
+                btn_random.setBackgroundResource(R.drawable.random_off);
+                Toast.makeText(this, "Modo aleatorio desactivado", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -275,10 +287,25 @@ public class MainActivity extends AppCompatActivity {
         isLiked = !isLiked;
         if (isLiked) {
             btn_like.setBackgroundResource(R.drawable.like_on);
-            Toast.makeText(this, "Liked", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Se ha añadido a tus 'Me gusta'", Toast.LENGTH_SHORT).show();
         } else {
             btn_like.setBackgroundResource(R.drawable.like_off);
-            Toast.makeText(this, "No Liked", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Se ha eliminado de tus 'Me gusta'", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Método para cambiar entre modo aleatorio y no aleatorio
+    public void AddToList(View view) {
+        if (vectormp[posicion] != null) {
+            if (vectormp[posicion].isLooping()) {
+                vectormp[posicion].setLooping(false);
+                btn_addlist.setBackgroundResource(R.drawable.playlist_add);
+                Toast.makeText(this, "Se ha borrado de tu lista", Toast.LENGTH_SHORT).show();
+            } else {
+                vectormp[posicion].setLooping(true);
+                btn_addlist.setBackgroundResource(R.drawable.playlist_add_check);
+                Toast.makeText(this, "Se ha añadido a tu lista", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -301,25 +328,21 @@ public class MainActivity extends AppCompatActivity {
 
     // Obtener el recurso de media (canción) según la posición
     private int getMediaResource(int position) {
-        switch (position) {
-            case 0:
-                return R.raw.pista_uno;
-            case 1:
-                return R.raw.pista_dos;
-            case 2:
-                return R.raw.pista_tres;
-            case 3:
-                return R.raw.pista_cuatro;
-            case 4:
-                return R.raw.pista_cicno;
-            case 5:
-                return R.raw.pista_seis;
-            case 6:
-                return R.raw.pista_siete;
-            case 7:
-                return R.raw.pista_ocho;
-            default:
-                return R.raw.pista_uno;
+        int[] mediaResources = {
+                R.raw.pista_uno,
+                R.raw.pista_dos,
+                R.raw.pista_tres,
+                R.raw.pista_cuatro,
+                R.raw.pista_cicno,
+                R.raw.pista_seis,
+                R.raw.pista_siete,
+                R.raw.pista_ocho
+        };
+
+        if (position >= 0 && position < mediaResources.length) {
+            return mediaResources[position];
+        } else {
+            return R.raw.pista_uno;
         }
     }
 
@@ -352,5 +375,10 @@ public class MainActivity extends AppCompatActivity {
                 mp.release();
             }
         }
+    }
+
+    //Cerrar la app con boton de regresar
+    public void Back(View view) {
+        finishAffinity();
     }
 }
