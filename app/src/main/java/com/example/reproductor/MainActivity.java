@@ -23,8 +23,7 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button play_pause, btn_repetir, btn_anterior, btn_siguiente, btn_detener, btn_random;
-    ImageButton btn_like;
+    Button play_pause, btn_repetir, btn_anterior, btn_siguiente, btn_detener, btn_random, btn_like;
     SeekBar seekBar, volumeBar;
     ImageView iv;
     int posicion = 0;
@@ -147,12 +146,12 @@ public class MainActivity extends AppCompatActivity {
     public void PlayPause(View view) {
         if (vectormp[posicion].isPlaying()) {
             vectormp[posicion].pause();
-            play_pause.setBackgroundResource(R.drawable.ic_reproducir);
+            play_pause.setBackgroundResource(R.drawable.play);
             Toast.makeText(this, "Pausa", Toast.LENGTH_SHORT).show();
             handler.removeCallbacksAndMessages(null);
         } else {
             vectormp[posicion].start();
-            play_pause.setBackgroundResource(R.drawable.ic_pausa);
+            play_pause.setBackgroundResource(R.drawable.pause);
             Toast.makeText(this, "Play", Toast.LENGTH_SHORT).show();
             seekBar.setProgress(0);
             actualizarSeekBar();
@@ -181,11 +180,11 @@ public class MainActivity extends AppCompatActivity {
         if (vectormp[posicion] != null) {
             if (vectormp[posicion].isLooping()) {
                 vectormp[posicion].setLooping(false);
-                btn_repetir.setBackgroundResource(R.drawable.ic_norepetir);
+                btn_repetir.setBackgroundResource(R.drawable.repeat);
                 Toast.makeText(this, "No repetir", Toast.LENGTH_SHORT).show();
             } else {
                 vectormp[posicion].setLooping(true);
-                btn_repetir.setBackgroundResource(R.drawable.ic_repetir);
+                btn_repetir.setBackgroundResource(R.drawable.repeat_1);
                 Toast.makeText(this, "Repetir", Toast.LENGTH_SHORT).show();
             }
         }
@@ -214,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
         }
         vectormp[posicion] = MediaPlayer.create(this, getMediaResource(posicion));
         vectormp[posicion].start();
-        play_pause.setBackgroundResource(R.drawable.ic_pausa);
+        play_pause.setBackgroundResource(R.drawable.pause);
         actualizarImagen();
         handler.removeCallbacksAndMessages(null);
         seekBar.setProgress(0);
@@ -251,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
         }
         vectormp[posicion] = MediaPlayer.create(this, getMediaResource(posicion));
         vectormp[posicion].start();
-        play_pause.setBackgroundResource(R.drawable.ic_pausa);
+        play_pause.setBackgroundResource(R.drawable.pause);
         actualizarImagen();
         handler.removeCallbacksAndMessages(null);
         seekBar.setProgress(0);
@@ -262,10 +261,10 @@ public class MainActivity extends AppCompatActivity {
     public void Random(View view) {
         isRandom = !isRandom;
         if (isRandom) {
-            btn_random.setBackgroundResource(R.drawable.random);
+            btn_random.setBackgroundResource(R.drawable.random_on);
             Toast.makeText(this, "Modo aleatorio activado", Toast.LENGTH_SHORT).show();
         } else {
-            btn_random.setBackgroundResource(R.drawable.norandom);
+            btn_random.setBackgroundResource(R.drawable.random_off);
             Toast.makeText(this, "Modo aleatorio desactivado", Toast.LENGTH_SHORT).show();
             playedPositions.clear();
         }
@@ -275,10 +274,10 @@ public class MainActivity extends AppCompatActivity {
     public void LikeNoLike(View view) {
         isLiked = !isLiked;
         if (isLiked) {
-            btn_like.setImageResource(R.drawable.like2);
+            btn_like.setBackgroundResource(R.drawable.like_on);
             Toast.makeText(this, "Liked", Toast.LENGTH_SHORT).show();
         } else {
-            btn_like.setImageResource(R.drawable.nolike);
+            btn_like.setBackgroundResource(R.drawable.like_off);
             Toast.makeText(this, "No Liked", Toast.LENGTH_SHORT).show();
         }
     }
