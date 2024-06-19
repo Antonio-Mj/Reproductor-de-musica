@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,12 +21,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
     Button play_pause, btn_repetir, btn_anterior, btn_siguiente, btn_detener, btn_random, btn_like, btn_addlist;
     SeekBar seekBar, volumeBar;
     ImageView iv;
+    TextView timerAbsolute;
     int posicion = 0;
     MediaPlayer[] vectormp = new MediaPlayer[10];
     int position = 0;
@@ -49,11 +52,12 @@ public class MainActivity extends AppCompatActivity {
         btn_siguiente = findViewById(R.id.btn_siguiente);
         btn_detener = findViewById(R.id.btn_detener);
         btn_like = findViewById(R.id.btn_like);
-        btn_addlist=findViewById(R.id.btn_addlist);
+        btn_addlist = findViewById(R.id.btn_addlist);
         btn_random = findViewById(R.id.btn_random);
         seekBar = findViewById(R.id.seekBar);
         volumeBar = findViewById(R.id.volumeBar);
         iv = findViewById(R.id.imageView);
+        timerAbsolute = findViewById(R.id.timer_absolute);
 
         // Inicialización de los MediaPlayer
         initMediaPlayer();
@@ -158,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Play", Toast.LENGTH_SHORT).show();
             seekBar.setProgress(0);
             actualizarSeekBar();
+            actualizarDuracionTotal(); // Añadir esta línea
         }
     }
 
@@ -176,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
         posicion = 0;
         vectormp[posicion] = MediaPlayer.create(this, getMediaResource(posicion));
         actualizarImagen();
+        actualizarDuracionTotal(); // Añadir esta línea
     }
 
     // Método para repetir o no repetir la canción
@@ -225,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
         vectormp[posicion].start();
         play_pause.setBackgroundResource(R.drawable.pause);
         actualizarImagen();
+        actualizarDuracionTotal(); // Añadir esta línea
         handler.removeCallbacksAndMessages(null);
         seekBar.setProgress(0);
         actualizarSeekBar();
@@ -262,6 +269,7 @@ public class MainActivity extends AppCompatActivity {
         vectormp[posicion].start();
         play_pause.setBackgroundResource(R.drawable.pause);
         actualizarImagen();
+        actualizarDuracionTotal(); // Añadir esta línea
         handler.removeCallbacksAndMessages(null);
         seekBar.setProgress(0);
         actualizarSeekBar();
@@ -352,6 +360,22 @@ public class MainActivity extends AppCompatActivity {
             seekBar.setMax(vectormp[posicion].getDuration());
             handler.postDelayed(updateSeekBar, 1000);
         }
+    }
+
+    // Añadir el método para actualizar la duración total
+    private void actualizarDuracionTotal() {
+        if (vectormp[posicion] != null) {
+            int duration = vectormp[posicion].getDuration();
+            String durationString = formatDuration(duration);
+            timerAbsolute.setText(durationString);
+        }
+    }
+
+    // Añadir el método para formatear la duración
+    private String formatDuration(int duration) {
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(duration);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(duration) % 60;
+        return String.format("%02d:%02d", minutes, seconds);
     }
 
     // Runnable para actualizar la barra de progreso cada segundo
