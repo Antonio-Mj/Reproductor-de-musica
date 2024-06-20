@@ -182,7 +182,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginEnd="32dp"
-            android:background="@drawable/random_off"
+            android:background="@drawable/random_on"
             android:onClick="Random"
             android:text=""
             app:layout_constraintBottom_toBottomOf="parent"
@@ -199,12 +199,15 @@
         android:layout_marginStart="10dp"
         android:text="00:00"
         android:textColor="@color/black"
+        android:textSize="12sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/bottomContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBar"
         app:layout_constraintVertical_bias="0.0" />
+
 
     <TextView
         android:id="@+id/timer_absolute"
@@ -213,6 +216,8 @@
         android:layout_marginEnd="10dp"
         android:text="00:00"
         android:textColor="@color/black"
+        android:textSize="12sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/bottomContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.853"
@@ -224,13 +229,15 @@
         android:id="@+id/title_song"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Titulo de la cancion"
+        android:text="Titulo"
         android:textColor="@color/black"
         android:textSize="20sp"
+        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/bottomContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView"
         app:layout_constraintVertical_bias="0.215" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
