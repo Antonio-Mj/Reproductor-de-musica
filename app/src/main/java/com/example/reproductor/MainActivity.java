@@ -189,45 +189,6 @@ public class MainActivity extends AppCompatActivity {
         handler.post(runnable);
     }
 
-    // Método para cambiar de canción y reiniciar el contador
-    private void cambiarCancion(int nuevaPosicion) {
-        // Detener el Runnable actual
-        handler.removeCallbacksAndMessages(null);
-
-        // Cambiar la posición de la canción
-        posicion = nuevaPosicion;
-
-        // Actualizar el título de la canción
-        updateSongTitle();
-
-        // Configurar un nuevo Runnable para actualizar el contador
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (vectormp[posicion] != null && vectormp[posicion].isPlaying()) {
-                    // Obtener la posición actual de la canción
-                    int currentPosition = vectormp[posicion].getCurrentPosition();
-
-                    // Calcular el tiempo transcurrido en minutos y segundos
-                    int seconds = (currentPosition / 1000) % 60;
-                    int minutes = (currentPosition / (1000 * 60)) % 60;
-
-                    // Formatear el tiempo en formato "MM:SS"
-                    String time = String.format("%02d:%02d", minutes, seconds);
-
-                    // Actualizar el TextView
-                    timerNegative.setText(time);
-                }
-
-                // Ejecutar este runnable nuevamente después de 1 segundo
-                handler.postDelayed(this, 1000);
-            }
-        };
-
-        // Iniciar el runnable para la nueva canción
-        handler.post(runnable);
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -307,94 +268,108 @@ public class MainActivity extends AppCompatActivity {
     // Método para avanzar a la siguiente canción
     public void Siguiente(View view) {
         if (vectormp[posicion] != null) {
+            // Detener la canción actual
             vectormp[posicion].stop();
-            vectormp[posicion].release();
-            vectormp[posicion] = null;
-        }
+            vectormp[posicion].reset(); // Resetear el MediaPlayer
 
-        if (isRandom) {
-            int newPosicion;
-            do {
-                newPosicion = random.nextInt(vectormp.length);
-            } while (newPosicion == posicion || playedPositions.contains(newPosicion));
-            posicion = newPosicion;
-            playedPositions.add(posicion);
-            if (playedPositions.size() == vectormp.length) {
-                playedPositions.clear();
+            // Cambiar a la siguiente posición de canción
+            if (isRandom) {
+                int newPosicion;
+                do {
+                    newPosicion = random.nextInt(vectormp.length);
+                } while (newPosicion == posicion || playedPositions.contains(newPosicion));
+                posicion = newPosicion;
+                playedPositions.add(posicion);
+                if (playedPositions.size() == vectormp.length) {
+                    playedPositions.clear();
+                }
+            } else {
+                posicion = (posicion + 1) % vectormp.length;
             }
-        } else {
-            posicion = (posicion + 1) % vectormp.length;
+
+            // Configurar el nuevo MediaPlayer y reproducir
+            vectormp[posicion] = MediaPlayer.create(this, getMediaResource(posicion));
+            vectormp[posicion].start();
+            play_pause.setBackgroundResource(R.drawable.pause);
+
+            // Actualizar la imagen y el título de la canción
+            actualizarImagen();
+            updateSongTitle();
+            actualizarDuracionTotal();
+            handler.removeCallbacksAndMessages(null);
+            seekBar.setProgress(0);
+            actualizarSeekBar();
+
+            // Asegurar que el bucle esté desactivado
+            vectormp[posicion].setLooping(false);
+            btn_repetir.setBackgroundResource(R.drawable.repeat);
         }
-
-        // Actualizar el título de la canción
-        updateSongTitle();
-
-        vectormp[posicion] = MediaPlayer.create(this, getMediaResource(posicion));
-        vectormp[posicion].start();
-        play_pause.setBackgroundResource(R.drawable.pause);
-
-        // Actualizar la imagen asociada a la canción actual
-        actualizarImagen();
-
-        actualizarDuracionTotal();
-        handler.removeCallbacksAndMessages(null);
-        seekBar.setProgress(0);
-        actualizarSeekBar();
     }
+
 
     // Método para retroceder a la canción anterior
     public void Anterior(View view) {
         if (vectormp[posicion] != null) {
+            // Detener la canción actual
             vectormp[posicion].stop();
-            vectormp[posicion].release();
-            vectormp[posicion] = null;
-        }
+            vectormp[posicion].reset(); // Resetear el MediaPlayer
 
-        if (isRandom) {
-            if (playedPositions.size() > 0) {
-                playedPositions.remove(playedPositions.size() - 1);
-            }
-            if (playedPositions.size() == 0) {
-                int newPosicion;
-                do {
-                    newPosicion = random.nextInt(vectormp.length);
-                } while (newPosicion == posicion);
-                posicion = newPosicion;
+            // Cambiar a la posición anterior de la canción
+            if (isRandom) {
+                if (playedPositions.size() > 0) {
+                    playedPositions.remove(playedPositions.size() - 1);
+                }
+                if (playedPositions.size() == 0) {
+                    int newPosicion;
+                    do {
+                        newPosicion = random.nextInt(vectormp.length);
+                    } while (newPosicion == posicion);
+                    posicion = newPosicion;
+                } else {
+                    posicion = playedPositions.get(playedPositions.size() - 1);
+                }
             } else {
-                posicion = playedPositions.get(playedPositions.size() - 1);
+                if (posicion > 0) {
+                    posicion--;
+                } else {
+                    posicion = vectormp.length - 1;
+                }
             }
-        } else {
-            if (posicion > 0) {
-                posicion--;
-            } else {
-                posicion = vectormp.length - 1;
-            }
+
+            // Configurar el nuevo MediaPlayer y reproducir
+            vectormp[posicion] = MediaPlayer.create(this, getMediaResource(posicion));
+            vectormp[posicion].start();
+            play_pause.setBackgroundResource(R.drawable.pause);
+            actualizarImagen();
+            updateSongTitle();
+            actualizarDuracionTotal();
+            handler.removeCallbacksAndMessages(null);
+            seekBar.setProgress(0);
+            actualizarSeekBar();
+
+            // Asegurar que el bucle esté desactivado
+            vectormp[posicion].setLooping(false);
+            btn_repetir.setBackgroundResource(R.drawable.repeat);
         }
-        vectormp[posicion] = MediaPlayer.create(this, getMediaResource(posicion));
-        vectormp[posicion].start();
-        play_pause.setBackgroundResource(R.drawable.pause);
-        actualizarImagen();
-        updateSongTitle();
-        actualizarDuracionTotal();
-        handler.removeCallbacksAndMessages(null);
-        seekBar.setProgress(0);
-        actualizarSeekBar();
     }
 
     // Método para cambiar entre modo aleatorio y no aleatorio
     public void Random(View view) {
         if (vectormp[posicion] != null) {
-            if (vectormp[posicion].isLooping()) {
-                vectormp[posicion].setLooping(false);
+            isRandom = !isRandom;
+
+            if (isRandom) {
                 btn_random.setBackgroundResource(R.drawable.random_on);
                 Toast.makeText(this, "Modo aleatorio activado", Toast.LENGTH_SHORT).show();
+                playedPositions.clear(); // Limpiar la lista de posiciones reproducidas cuando se activa el modo aleatorio
             } else {
-                vectormp[posicion].setLooping(true);
                 btn_random.setBackgroundResource(R.drawable.random_off);
                 Toast.makeText(this, "Modo aleatorio desactivado", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
+
 
     // Método para cambiar el estado de "Like" de una canción
     public void LikeNoLike(View view) {
@@ -465,6 +440,45 @@ public class MainActivity extends AppCompatActivity {
         if (vectormp[posicion] != null) {
             seekBar.setMax(vectormp[posicion].getDuration());
             handler.postDelayed(updateSeekBar, 1000);
+
+            // Listener para detectar el final de la canción
+            vectormp[posicion].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    // Detener el MediaPlayer actual
+                    mp.stop();
+                    mp.release();
+                    mp = null;
+
+                    // Avanzar a la siguiente canción
+                    if (isRandom) {
+                        int newPosicion;
+                        do {
+                            newPosicion = random.nextInt(vectormp.length);
+                        } while (newPosicion == posicion || playedPositions.contains(newPosicion));
+                        posicion = newPosicion;
+                        playedPositions.add(posicion);
+                        if (playedPositions.size() == vectormp.length) {
+                            playedPositions.clear();
+                        }
+                    } else {
+                        posicion = (posicion + 1) % vectormp.length;
+                    }
+
+                    // Crear y comenzar el nuevo MediaPlayer para la siguiente canción
+                    vectormp[posicion] = MediaPlayer.create(MainActivity.this, getMediaResource(posicion));
+                    vectormp[posicion].start();
+                    play_pause.setBackgroundResource(R.drawable.pause);
+
+                    // Actualizar la imagen y el título de la nueva canción
+                    actualizarImagen();
+                    updateSongTitle();
+                    actualizarDuracionTotal();
+                    handler.removeCallbacksAndMessages(null);
+                    seekBar.setProgress(0);
+                    actualizarSeekBar();
+                }
+            });
         }
     }
 
