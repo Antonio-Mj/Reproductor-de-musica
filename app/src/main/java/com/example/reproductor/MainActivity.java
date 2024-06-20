@@ -110,12 +110,10 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
+            public void onStartTrackingTouch(SeekBar seekBar) {}
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
+            public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
         // Configuración del SeekBar para la canción actual
@@ -128,19 +126,17 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
+            public void onStartTrackingTouch(SeekBar seekBar) {}
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
+            public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
         // Inicialización de la imagen asociada a la canción actual
         actualizarImagen();
 
-        // Iniciar el contador para la canción actual
-        iniciarContador();
+        // Actualizar el tiempo total de la primera canción
+        actualizarDuracionTotal();
 
         // Registro del BroadcastReceiver para cambios en el volumen
         volumeReceiver = new BroadcastReceiver() {
@@ -157,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter("android.media.VOLUME_CHANGED_ACTION");
         registerReceiver(volumeReceiver, filter);
     }
-
     // Método para iniciar el contador del tiempo transcurrido
     private void iniciarContador() {
         // Detener el runnable actual si existe
@@ -258,8 +253,12 @@ public class MainActivity extends AppCompatActivity {
             actualizarSeekBar();
             actualizarDuracionTotal();
             iniciarContador();
+
+            // Actualizar el tiempo total de la canción
+            actualizarDuracionTotal();
         }
     }
+
 
 
     // Método para detener la canción
