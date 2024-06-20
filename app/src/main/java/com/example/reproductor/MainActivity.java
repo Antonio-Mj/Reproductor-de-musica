@@ -8,13 +8,15 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -29,8 +31,15 @@ public class MainActivity extends AppCompatActivity {
     SeekBar seekBar, volumeBar;
     ImageView iv;
     TextView timerAbsolute;
+
+
+    private TextView titleSong;
+    private List<String> songTitles;
+    private int currentSongIndex;
+
+
     int posicion = 0;
-    MediaPlayer[] vectormp = new MediaPlayer[10];
+    MediaPlayer[] vectormp = new MediaPlayer[8];
     int position = 0;
     Handler handler = new Handler();
     boolean isLiked = false;
@@ -56,8 +65,31 @@ public class MainActivity extends AppCompatActivity {
         btn_random = findViewById(R.id.btn_random);
         seekBar = findViewById(R.id.seekBar);
         volumeBar = findViewById(R.id.volumeBar);
+        titleSong = findViewById(R.id.title_song);
         iv = findViewById(R.id.imageView);
         timerAbsolute = findViewById(R.id.timer_absolute);
+
+        // Animación para que gire la imagen
+        Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        iv.startAnimation(rotateAnimation);
+
+        // Lista de títulos de canciones
+        songTitles = new ArrayList<>();
+        songTitles.add("Paint it black - Rolling Stones");
+        songTitles.add("Hielo - Eladio Carrionn");
+        songTitles.add("NI BIEN NI MAL - Bad Bunny");
+        songTitles.add("Carta de despedida - Lit Killah");
+        songTitles.add("BÉSAME REMIX - Tiago PZK");
+        songTitles.add("Una noche más - Panther");
+        songTitles.add("Además de mi - Duki");
+        songTitles.add("She don't give a fo - Duki");
+
+
+        // Inicialización del índice de la canción actual
+        posicion = 0;
+
+        // Configuración inicial del título de la canción
+        updateSongTitle();
 
         // Inicialización de los MediaPlayer
         initMediaPlayer();
@@ -78,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
         int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         volumeBar.setMax(maxVolume);
         volumeBar.setProgress(currentVolume);
-
         volumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -123,7 +154,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
+        // Registro del BroadcastReceiver
+        IntentFilter filter = new IntentFilter("android.media.VOLUME_CHANGED_ACTION");
+        registerReceiver(volumeReceiver, filter);
     }
+
 
     @Override
     protected void onResume() {
@@ -162,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Play", Toast.LENGTH_SHORT).show();
             seekBar.setProgress(0);
             actualizarSeekBar();
-            actualizarDuracionTotal(); // Añadir esta línea
+            actualizarDuracionTotal();
         }
     }
 
@@ -181,27 +217,22 @@ public class MainActivity extends AppCompatActivity {
         posicion = 0;
         vectormp[posicion] = MediaPlayer.create(this, getMediaResource(posicion));
         actualizarImagen();
-        actualizarDuracionTotal(); // Añadir esta línea
+        actualizarDuracionTotal();
     }
 
     // Método para repetir o no repetir la canción
     public void Repetir(View view) {
-        Log.d("Repetir", "Método Repetir llamado");
         if (vectormp[posicion] != null) {
-            Log.d("Repetir", "MediaPlayer no es nulo");
             if (vectormp[posicion].isLooping()) {
-                Log.d("Repetir", "MediaPlayer está en modo de repetición");
                 vectormp[posicion].setLooping(false);
                 btn_repetir.setBackgroundResource(R.drawable.repeat);
                 Toast.makeText(this, "No repetir", Toast.LENGTH_SHORT).show();
             } else {
-                Log.d("Repetir", "MediaPlayer no está en modo de repetición");
                 vectormp[posicion].setLooping(true);
                 btn_repetir.setBackgroundResource(R.drawable.repeat_1);
                 Toast.makeText(this, "Repetir", Toast.LENGTH_SHORT).show();
             }
         } else {
-            Log.d("Repetir", "MediaPlayer es nulo");
             Toast.makeText(this, "No hay una canción cargada", Toast.LENGTH_SHORT).show();
         }
     }
@@ -227,11 +258,18 @@ public class MainActivity extends AppCompatActivity {
         } else {
             posicion = (posicion + 1) % vectormp.length;
         }
+
+        // Actualizar el título de la canción
+        updateSongTitle();
+
         vectormp[posicion] = MediaPlayer.create(this, getMediaResource(posicion));
         vectormp[posicion].start();
         play_pause.setBackgroundResource(R.drawable.pause);
+
+        // Actualizar la imagen asociada a la canción actual
         actualizarImagen();
-        actualizarDuracionTotal(); // Añadir esta línea
+
+        actualizarDuracionTotal();
         handler.removeCallbacksAndMessages(null);
         seekBar.setProgress(0);
         actualizarSeekBar();
@@ -269,7 +307,8 @@ public class MainActivity extends AppCompatActivity {
         vectormp[posicion].start();
         play_pause.setBackgroundResource(R.drawable.pause);
         actualizarImagen();
-        actualizarDuracionTotal(); // Añadir esta línea
+        updateSongTitle();
+        actualizarDuracionTotal();
         handler.removeCallbacksAndMessages(null);
         seekBar.setProgress(0);
         actualizarSeekBar();
@@ -320,7 +359,7 @@ public class MainActivity extends AppCompatActivity {
     // Actualizar la imagen asociada a la canción actual
     private void actualizarImagen() {
         int[] imageResources = {
-                R.drawable.song,
+                R.drawable.song1,
                 R.drawable.song2,
                 R.drawable.song3,
                 R.drawable.song4,
@@ -389,6 +428,12 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
+    private void updateSongTitle() {
+        if (posicion >= 0 && posicion < songTitles.size()) {
+            titleSong.setText(songTitles.get(posicion));
+        }
+    }
     // Limpiar recursos al destruir la actividad
     @Override
     protected void onDestroy() {
