@@ -110,10 +110,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
 
         // Configuración del SeekBar para la canción actual
@@ -126,10 +128,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
 
         // Inicialización de la imagen asociada a la canción actual
@@ -155,11 +159,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Método para iniciar el contador del tiempo transcurrido
+    // Método para iniciar el contador del tiempo transcurrido
     private void iniciarContador() {
         // Detener el runnable actual si existe
-        if (handler != null && runnable != null) {
-            handler.removeCallbacks(runnable);
-        }
+        handler.removeCallbacksAndMessages(null);
 
         // Configurar un nuevo runnable para actualizar el contador
         runnable = new Runnable() {
@@ -187,6 +190,31 @@ public class MainActivity extends AppCompatActivity {
 
         // Iniciar el runnable por primera vez
         handler.post(runnable);
+
+
+        // Configurar un nuevo runnable para actualizar el contador
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (vectormp[posicion] != null && vectormp[posicion].isPlaying()) {
+                    // Obtener la posición actual de la canción
+                    int currentPosition = vectormp[posicion].getCurrentPosition();
+
+                    // Calcular el tiempo transcurrido en minutos y segundos
+                    int seconds = (currentPosition / 1000) % 60;
+                    int minutes = (currentPosition / (1000 * 60)) % 60;
+
+                    // Formatear el tiempo en formato "MM:SS"
+                    String time = String.format("%02d:%02d", minutes, seconds);
+
+                    // Actualizar el TextView
+                    timerNegative.setText(time);
+                }
+
+                // Ejecutar este runnable nuevamente después de 1 segundo
+                handler.postDelayed(this, 1000);
+            }
+        };
     }
 
     @Override
@@ -266,91 +294,94 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Método para avanzar a la siguiente canción
+    // Método para avanzar a la siguiente canción
     public void Siguiente(View view) {
         if (vectormp[posicion] != null) {
-            // Detener la canción actual
             vectormp[posicion].stop();
-            vectormp[posicion].reset(); // Resetear el MediaPlayer
-
-            // Cambiar a la siguiente posición de canción
-            if (isRandom) {
-                int newPosicion;
-                do {
-                    newPosicion = random.nextInt(vectormp.length);
-                } while (newPosicion == posicion || playedPositions.contains(newPosicion));
-                posicion = newPosicion;
-                playedPositions.add(posicion);
-                if (playedPositions.size() == vectormp.length) {
-                    playedPositions.clear();
-                }
-            } else {
-                posicion = (posicion + 1) % vectormp.length;
-            }
-
-            // Configurar el nuevo MediaPlayer y reproducir
-            vectormp[posicion] = MediaPlayer.create(this, getMediaResource(posicion));
-            vectormp[posicion].start();
-            play_pause.setBackgroundResource(R.drawable.pause);
-
-            // Actualizar la imagen y el título de la canción
-            actualizarImagen();
-            updateSongTitle();
-            actualizarDuracionTotal();
-            handler.removeCallbacksAndMessages(null);
-            seekBar.setProgress(0);
-            actualizarSeekBar();
-
-            // Asegurar que el bucle esté desactivado
-            vectormp[posicion].setLooping(false);
-            btn_repetir.setBackgroundResource(R.drawable.repeat);
+            vectormp[posicion].release();
+            vectormp[posicion] = null;
         }
-    }
 
+        if (isRandom) {
+            int newPosicion;
+            do {
+                newPosicion = random.nextInt(vectormp.length);
+            } while (newPosicion == posicion || playedPositions.contains(newPosicion));
+            posicion = newPosicion;
+            playedPositions.add(posicion);
+            if (playedPositions.size() == vectormp.length) {
+                playedPositions.clear();
+            }
+        } else {
+            posicion = (posicion + 1) % vectormp.length;
+        }
+
+        // Reiniciar el contador de tiempo transcurrido
+        timerNegative.setText("00:00");
+
+        // Actualizar el título de la canción
+        updateSongTitle();
+
+        vectormp[posicion] = MediaPlayer.create(this, getMediaResource(posicion));
+        vectormp[posicion].start();
+        play_pause.setBackgroundResource(R.drawable.pause);
+
+        // Actualizar la imagen asociada a la canción actual
+        actualizarImagen();
+
+        actualizarDuracionTotal();
+        handler.removeCallbacksAndMessages(null);
+        seekBar.setProgress(0);
+        actualizarSeekBar();
+
+        // Iniciar el contador de tiempo transcurrido
+        iniciarContador();
+    }
 
     // Método para retroceder a la canción anterior
     public void Anterior(View view) {
         if (vectormp[posicion] != null) {
-            // Detener la canción actual
             vectormp[posicion].stop();
-            vectormp[posicion].reset(); // Resetear el MediaPlayer
-
-            // Cambiar a la posición anterior de la canción
-            if (isRandom) {
-                if (playedPositions.size() > 0) {
-                    playedPositions.remove(playedPositions.size() - 1);
-                }
-                if (playedPositions.size() == 0) {
-                    int newPosicion;
-                    do {
-                        newPosicion = random.nextInt(vectormp.length);
-                    } while (newPosicion == posicion);
-                    posicion = newPosicion;
-                } else {
-                    posicion = playedPositions.get(playedPositions.size() - 1);
-                }
-            } else {
-                if (posicion > 0) {
-                    posicion--;
-                } else {
-                    posicion = vectormp.length - 1;
-                }
-            }
-
-            // Configurar el nuevo MediaPlayer y reproducir
-            vectormp[posicion] = MediaPlayer.create(this, getMediaResource(posicion));
-            vectormp[posicion].start();
-            play_pause.setBackgroundResource(R.drawable.pause);
-            actualizarImagen();
-            updateSongTitle();
-            actualizarDuracionTotal();
-            handler.removeCallbacksAndMessages(null);
-            seekBar.setProgress(0);
-            actualizarSeekBar();
-
-            // Asegurar que el bucle esté desactivado
-            vectormp[posicion].setLooping(false);
-            btn_repetir.setBackgroundResource(R.drawable.repeat);
+            vectormp[posicion].release();
+            vectormp[posicion] = null;
         }
+
+        if (isRandom) {
+            if (playedPositions.size() > 0) {
+                playedPositions.remove(playedPositions.size() - 1);
+            }
+            if (playedPositions.size() == 0) {
+                int newPosicion;
+                do {
+                    newPosicion = random.nextInt(vectormp.length);
+                } while (newPosicion == posicion);
+                posicion = newPosicion;
+            } else {
+                posicion = playedPositions.get(playedPositions.size() - 1);
+            }
+        } else {
+            if (posicion > 0) {
+                posicion--;
+            } else {
+                posicion = vectormp.length - 1;
+            }
+        }
+
+        // Reiniciar el contador de tiempo transcurrido
+        timerNegative.setText("00:00");
+
+        vectormp[posicion] = MediaPlayer.create(this, getMediaResource(posicion));
+        vectormp[posicion].start();
+        play_pause.setBackgroundResource(R.drawable.pause);
+        actualizarImagen();
+        updateSongTitle();
+        actualizarDuracionTotal();
+        handler.removeCallbacksAndMessages(null);
+        seekBar.setProgress(0);
+        actualizarSeekBar();
+
+        // Iniciar el contador de tiempo transcurrido
+        iniciarContador();
     }
 
     // Método para cambiar entre modo aleatorio y no aleatorio
