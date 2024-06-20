@@ -16,10 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -30,20 +27,14 @@ public class MainActivity extends AppCompatActivity {
     Button play_pause, btn_repetir, btn_anterior, btn_siguiente, btn_detener, btn_random, btn_like, btn_addlist;
     SeekBar seekBar, volumeBar;
     ImageView iv;
-    TextView timerAbsolute;
-
-
-    private TextView titleSong;
+    TextView timerAbsolute, timerNegative, titleSong;
     private List<String> songTitles;
-    private int currentSongIndex;
-
-
-    int posicion = 0;
+    int posicion = 0, currentSongIndex;
     MediaPlayer[] vectormp = new MediaPlayer[8];
     int position = 0;
     Handler handler = new Handler();
-    boolean isLiked = false;
-    boolean isRandom = false;
+    Runnable runnable;
+    boolean isLiked = false, isRandom = false;
     Random random = new Random();
     List<Integer> playedPositions = new ArrayList<>();
     AudioManager audioManager;
@@ -68,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         titleSong = findViewById(R.id.title_song);
         iv = findViewById(R.id.imageView);
         timerAbsolute = findViewById(R.id.timer_absolute);
+        timerNegative = findViewById(R.id.timer_negative);
 
         // Animación para que gire la imagen
         Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
@@ -83,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
         songTitles.add("Una noche más - Panther");
         songTitles.add("Además de mi - Duki");
         songTitles.add("She don't give a fo - Duki");
-
 
         // Inicialización del índice de la canción actual
         posicion = 0;
@@ -144,7 +135,10 @@ public class MainActivity extends AppCompatActivity {
         // Inicialización de la imagen asociada a la canción actual
         actualizarImagen();
 
-        // Inicialización del BroadcastReceiver para cambios en el volumen
+        // Iniciar el contador para la canción actual
+        iniciarContador();
+
+        // Registro del BroadcastReceiver para cambios en el volumen
         volumeReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -160,6 +154,79 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(volumeReceiver, filter);
     }
 
+    // Método para iniciar el contador del tiempo transcurrido
+    private void iniciarContador() {
+        // Detener el runnable actual si existe
+        if (handler != null && runnable != null) {
+            handler.removeCallbacks(runnable);
+        }
+
+        // Configurar un nuevo runnable para actualizar el contador
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (vectormp[posicion] != null && vectormp[posicion].isPlaying()) {
+                    // Obtener la posición actual de la canción
+                    int currentPosition = vectormp[posicion].getCurrentPosition();
+
+                    // Calcular el tiempo transcurrido en minutos y segundos
+                    int seconds = (currentPosition / 1000) % 60;
+                    int minutes = (currentPosition / (1000 * 60)) % 60;
+
+                    // Formatear el tiempo en formato "MM:SS"
+                    String time = String.format("%02d:%02d", minutes, seconds);
+
+                    // Actualizar el TextView
+                    timerNegative.setText(time);
+                }
+
+                // Ejecutar este runnable nuevamente después de 1 segundo
+                handler.postDelayed(this, 1000);
+            }
+        };
+
+        // Iniciar el runnable por primera vez
+        handler.post(runnable);
+    }
+
+    // Método para cambiar de canción y reiniciar el contador
+    private void cambiarCancion(int nuevaPosicion) {
+        // Detener el Runnable actual
+        handler.removeCallbacksAndMessages(null);
+
+        // Cambiar la posición de la canción
+        posicion = nuevaPosicion;
+
+        // Actualizar el título de la canción
+        updateSongTitle();
+
+        // Configurar un nuevo Runnable para actualizar el contador
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (vectormp[posicion] != null && vectormp[posicion].isPlaying()) {
+                    // Obtener la posición actual de la canción
+                    int currentPosition = vectormp[posicion].getCurrentPosition();
+
+                    // Calcular el tiempo transcurrido en minutos y segundos
+                    int seconds = (currentPosition / 1000) % 60;
+                    int minutes = (currentPosition / (1000 * 60)) % 60;
+
+                    // Formatear el tiempo en formato "MM:SS"
+                    String time = String.format("%02d:%02d", minutes, seconds);
+
+                    // Actualizar el TextView
+                    timerNegative.setText(time);
+                }
+
+                // Ejecutar este runnable nuevamente después de 1 segundo
+                handler.postDelayed(this, 1000);
+            }
+        };
+
+        // Iniciar el runnable para la nueva canción
+        handler.post(runnable);
+    }
 
     @Override
     protected void onResume() {
@@ -428,7 +495,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-
     private void updateSongTitle() {
         if (posicion >= 0 && posicion < songTitles.size()) {
             titleSong.setText(songTitles.get(posicion));
@@ -445,9 +511,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
     //Cerrar la app con boton de regresar
     public void Back(View view) {
         finishAffinity();
     }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        handler.removeCallbacks(runnable);
+    }
 }
+
