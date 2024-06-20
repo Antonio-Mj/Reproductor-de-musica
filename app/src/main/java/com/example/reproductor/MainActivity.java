@@ -159,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Método para iniciar el contador del tiempo transcurrido
-    // Método para iniciar el contador del tiempo transcurrido
     private void iniciarContador() {
         // Detener el runnable actual si existe
         handler.removeCallbacksAndMessages(null);
@@ -192,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
         handler.post(runnable);
 
 
-        // Configurar un nuevo runnable para actualizar el contador
+    // Configurar un nuevo runnable para actualizar el contador
         runnable = new Runnable() {
             @Override
             public void run() {
@@ -244,19 +243,24 @@ public class MainActivity extends AppCompatActivity {
     // Método para reproducir o pausar la canción
     public void PlayPause(View view) {
         if (vectormp[posicion].isPlaying()) {
+            // Si la canción está reproduciéndose, pausarla
             vectormp[posicion].pause();
             play_pause.setBackgroundResource(R.drawable.play);
             Toast.makeText(this, "Pausa", Toast.LENGTH_SHORT).show();
+            // Detener el contador y la actualización de la seekbar
             handler.removeCallbacksAndMessages(null);
         } else {
+            // Si la canción está pausada, iniciarla
             vectormp[posicion].start();
             play_pause.setBackgroundResource(R.drawable.pause);
             Toast.makeText(this, "Play", Toast.LENGTH_SHORT).show();
-            seekBar.setProgress(0);
+            // Actualizar la seekbar y el contador
             actualizarSeekBar();
             actualizarDuracionTotal();
+            iniciarContador();
         }
     }
+
 
     // Método para detener la canción
     public void Stop(View view) {
@@ -400,8 +404,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
     // Método para cambiar el estado de "Like" de una canción
     public void LikeNoLike(View view) {
         isLiked = !isLiked;
@@ -470,7 +472,9 @@ public class MainActivity extends AppCompatActivity {
     private void actualizarSeekBar() {
         if (vectormp[posicion] != null) {
             seekBar.setMax(vectormp[posicion].getDuration());
+            // Actualizar la seekbar cada segundo
             handler.postDelayed(updateSeekBar, 1000);
+
 
             // Listener para detectar el final de la canción
             vectormp[posicion].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -529,7 +533,8 @@ public class MainActivity extends AppCompatActivity {
         return String.format("%02d:%02d", minutes, seconds);
     }
 
-    // Runnable para actualizar la barra de progreso cada segundo
+
+    // Runnable para actualizar la seekbar cada segundo
     private Runnable updateSeekBar = new Runnable() {
         @Override
         public void run() {
