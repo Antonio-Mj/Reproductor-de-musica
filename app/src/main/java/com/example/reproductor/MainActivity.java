@@ -253,13 +253,9 @@ public class MainActivity extends AppCompatActivity {
             actualizarSeekBar();
             actualizarDuracionTotal();
             iniciarContador();
-
-            // Actualizar el tiempo total de la canción
             actualizarDuracionTotal();
         }
     }
-
-
 
     // Método para detener la canción
     public void Stop(View view) {
@@ -296,7 +292,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Método para avanzar a la siguiente canción
     // Método para avanzar a la siguiente canción
     public void Siguiente(View view) {
         if (vectormp[posicion] != null) {
@@ -403,6 +398,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     // Método para cambiar el estado de "Like" de una canción
     public void LikeNoLike(View view) {
         isLiked = !isLiked;
@@ -474,43 +470,53 @@ public class MainActivity extends AppCompatActivity {
             // Actualizar la seekbar cada segundo
             handler.postDelayed(updateSeekBar, 1000);
 
-
             // Listener para detectar el final de la canción
             vectormp[posicion].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
-                    // Detener el MediaPlayer actual
-                    mp.stop();
-                    mp.release();
-                    mp = null;
+                    if (vectormp[posicion].isLooping()) {
+                        // Si la canción está en modo de repetición, reiniciar la misma canción
+                        vectormp[posicion].seekTo(0);
+                        seekBar.setProgress(0);
+                        timerNegative.setText("00:00");
+                        play_pause.setBackgroundResource(R.drawable.pause);
 
-                    // Avanzar a la siguiente canción
-                    if (isRandom) {
-                        int newPosicion;
-                        do {
-                            newPosicion = random.nextInt(vectormp.length);
-                        } while (newPosicion == posicion || playedPositions.contains(newPosicion));
-                        posicion = newPosicion;
-                        playedPositions.add(posicion);
-                        if (playedPositions.size() == vectormp.length) {
-                            playedPositions.clear();
-                        }
+                        // Reiniciar la canción
+                        vectormp[posicion].start();
                     } else {
-                        posicion = (posicion + 1) % vectormp.length;
+                        // Detener el MediaPlayer actual
+                        mp.stop();
+                        mp.release();
+                        mp = null;
+
+                        // Avanzar a la siguiente canción
+                        if (isRandom) {
+                            int newPosicion;
+                            do {
+                                newPosicion = random.nextInt(vectormp.length);
+                            } while (newPosicion == posicion || playedPositions.contains(newPosicion));
+                            posicion = newPosicion;
+                            playedPositions.add(posicion);
+                            if (playedPositions.size() == vectormp.length) {
+                                playedPositions.clear();
+                            }
+                        } else {
+                            posicion = (posicion + 1) % vectormp.length;
+                        }
+
+                        // Crear y comenzar el nuevo MediaPlayer para la siguiente canción
+                        vectormp[posicion] = MediaPlayer.create(MainActivity.this, getMediaResource(posicion));
+                        vectormp[posicion].start();
+                        play_pause.setBackgroundResource(R.drawable.pause);
+
+                        // Actualizar la imagen y el título de la nueva canción
+                        actualizarImagen();
+                        updateSongTitle();
+                        actualizarDuracionTotal();
+                        handler.removeCallbacksAndMessages(null);
+                        seekBar.setProgress(0);
+                        actualizarSeekBar();
                     }
-
-                    // Crear y comenzar el nuevo MediaPlayer para la siguiente canción
-                    vectormp[posicion] = MediaPlayer.create(MainActivity.this, getMediaResource(posicion));
-                    vectormp[posicion].start();
-                    play_pause.setBackgroundResource(R.drawable.pause);
-
-                    // Actualizar la imagen y el título de la nueva canción
-                    actualizarImagen();
-                    updateSongTitle();
-                    actualizarDuracionTotal();
-                    handler.removeCallbacksAndMessages(null);
-                    seekBar.setProgress(0);
-                    actualizarSeekBar();
                 }
             });
         }
