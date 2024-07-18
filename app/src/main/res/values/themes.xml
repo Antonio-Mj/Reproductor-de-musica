@@ -1,9 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.Reproductor" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.Reproductor.NoActionBar" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
-
-    <style name="Theme.Reproductor" parent="Base.Theme.Reproductor" />
 </resources>

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Reproductor</string>
+    <string name="password" />
+    <string name="email" />
+    <string name="login" />
+    <string name="click_to_login">Click to login</string>
+    <string name="click_to_register">Click to register</string>
 </resources>

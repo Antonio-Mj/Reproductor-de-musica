@@ -17,17 +17,25 @@ import android.widget.Toast;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.Firebase;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
+    FirebaseAuth auth;
+    FirebaseUser user;
 
-    Button play_pause, btn_repetir, btn_anterior, btn_siguiente, btn_detener, btn_random, btn_like, btn_addlist;
+    Button play_pause, btn_repetir, btn_anterior, btn_siguiente, btn_detener, btn_random, btn_like, btn_addlist, btn_back;
     SeekBar seekBar, volumeBar;
     ImageView iv;
-    TextView timerAbsolute, timerNegative, titleSong;
+    TextView timerAbsolute, timerNegative, titleSong, userDetails;
     private List<String> songTitles;
     int posicion = 0, currentSongIndex;
     MediaPlayer[] vectormp = new MediaPlayer[8];
@@ -60,6 +68,30 @@ public class MainActivity extends AppCompatActivity {
         iv = findViewById(R.id.imageView);
         timerAbsolute = findViewById(R.id.timer_absolute);
         timerNegative = findViewById(R.id.timer_negative);
+
+        auth = FirebaseAuth.getInstance();
+        btn_back = findViewById(R.id.btn_back);
+        userDetails = findViewById(R.id.user_details);
+        user = auth.getCurrentUser();
+
+        if (user == null) {
+            // Si el usuario no está autenticado, redirigir al usuario a la pantalla de inicio de sesión
+            Intent intent = new Intent(getApplicationContext(), Login.class);
+            startActivity(intent);
+            finish();
+        } else {
+            userDetails.setText("Bienvenido " + user.getEmail());
+        }
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), Login.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         // Animación para que gire la imagen
         Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
@@ -155,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
     }
     // Método para iniciar el contador del tiempo transcurrido
     private void iniciarContador() {
-        // Detener el runnable actual si existe
+        // Detener el runnable actual si existeY
         handler.removeCallbacksAndMessages(null);
 
         // Configurar un nuevo runnable para actualizar el contador
@@ -241,14 +273,14 @@ public class MainActivity extends AppCompatActivity {
             // Si la canción está reproduciéndose, pausarla
             vectormp[posicion].pause();
             play_pause.setBackgroundResource(R.drawable.play);
-            Toast.makeText(this, "Pausa", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Pausa", Toast.LENGTH_SHORT).show();
             // Detener el contador y la actualización de la seekbar
             handler.removeCallbacksAndMessages(null);
         } else {
             // Si la canción está pausada, iniciarla
             vectormp[posicion].start();
             play_pause.setBackgroundResource(R.drawable.pause);
-            Toast.makeText(this, "Play", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Play", Toast.LENGTH_SHORT).show();
             // Actualizar la seekbar y el contador
             actualizarSeekBar();
             actualizarDuracionTotal();
@@ -263,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
             vectormp[posicion].stop();
             vectormp[posicion].release();
             vectormp[posicion] = null;
-            Toast.makeText(this, "Stop", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Stop", Toast.LENGTH_SHORT).show();
             handler.removeCallbacksAndMessages(null);
             seekBar.setProgress(0);
         }
@@ -281,14 +313,14 @@ public class MainActivity extends AppCompatActivity {
             if (vectormp[posicion].isLooping()) {
                 vectormp[posicion].setLooping(false);
                 btn_repetir.setBackgroundResource(R.drawable.repeat);
-                Toast.makeText(this, "No repetir", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "No repetir", Toast.LENGTH_SHORT).show();
             } else {
                 vectormp[posicion].setLooping(true);
                 btn_repetir.setBackgroundResource(R.drawable.repeat_1);
-                Toast.makeText(this, "Repetir", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Repetir", Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(this, "No hay una canción cargada", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "No hay una canción cargada", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -389,11 +421,11 @@ public class MainActivity extends AppCompatActivity {
 
             if (isRandom) {
                 btn_random.setBackgroundResource(R.drawable.random_on);
-                Toast.makeText(this, "Modo aleatorio activado", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Modo aleatorio activado", Toast.LENGTH_SHORT).show();
                 playedPositions.clear(); // Limpiar la lista de posiciones reproducidas cuando se activa el modo aleatorio
             } else {
                 btn_random.setBackgroundResource(R.drawable.random_off);
-                Toast.makeText(this, "Modo aleatorio desactivado", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Modo aleatorio desactivado", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -404,10 +436,10 @@ public class MainActivity extends AppCompatActivity {
         isLiked = !isLiked;
         if (isLiked) {
             btn_like.setBackgroundResource(R.drawable.like_on);
-            Toast.makeText(this, "Se ha añadido a tus 'Me gusta'", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Se ha añadido a tus 'Me gusta'", Toast.LENGTH_SHORT).show();
         } else {
             btn_like.setBackgroundResource(R.drawable.like_off);
-            Toast.makeText(this, "Se ha eliminado de tus 'Me gusta'", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Se ha eliminado de tus 'Me gusta'", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -417,11 +449,11 @@ public class MainActivity extends AppCompatActivity {
             if (vectormp[posicion].isLooping()) {
                 vectormp[posicion].setLooping(false);
                 btn_addlist.setBackgroundResource(R.drawable.playlist_add);
-                Toast.makeText(this, "Se ha borrado de tu lista", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Se ha borrado de tu lista", Toast.LENGTH_SHORT).show();
             } else {
                 vectormp[posicion].setLooping(true);
                 btn_addlist.setBackgroundResource(R.drawable.playlist_add_check);
-                Toast.makeText(this, "Se ha añadido a tu lista", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Se ha añadido a tu lista", Toast.LENGTH_SHORT).show();
             }
         }
     }
