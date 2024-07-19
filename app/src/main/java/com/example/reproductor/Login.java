@@ -74,7 +74,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void updateDrawState(@NonNull TextPaint ds) {
                 super.updateDrawState(ds);
-                ds.setColor(getResources().getColor(android.R.color.holo_blue_light));
+                ds.setColor(getResources().getColor(R.color.blue_text));
                 ds.setUnderlineText(true);
             }
         };
