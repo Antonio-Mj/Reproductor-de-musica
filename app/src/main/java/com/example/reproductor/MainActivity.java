@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     Button play_pause, btn_repetir, btn_anterior, btn_siguiente, btn_detener, btn_random, btn_like, btn_addlist, btn_back;
     SeekBar seekBar, volumeBar;
     ImageView iv;
-    TextView timerAbsolute, timerNegative, titleSong, userDetails;
+    TextView timerAbsolute, timerNegative, titleSong;
     private List<String> songTitles;
     int posicion = 0, currentSongIndex;
     MediaPlayer[] vectormp = new MediaPlayer[8];
@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         btn_back = findViewById(R.id.btn_back);
-        userDetails = findViewById(R.id.user_details);
         user = auth.getCurrentUser();
 
         if (user == null) {
@@ -79,8 +78,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), Login.class);
             startActivity(intent);
             finish();
-        } else {
-            userDetails.setText("Bienvenido " + user.getEmail());
         }
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
