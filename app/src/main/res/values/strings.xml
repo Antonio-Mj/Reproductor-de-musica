@@ -6,4 +6,5 @@
     <string name="click_to_login">Click to login</string>
     <string name="click_to_register">Click to register</string>
     <string name="back_to_login">Back to login</string>
+    <string name="cancel">cancel</string>
 </resources>

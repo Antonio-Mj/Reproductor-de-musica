@@ -10,7 +10,10 @@ import android.text.style.ClickableSpan;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,6 +62,15 @@ public class Login extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         textView = findViewById(R.id.registerNow);
         resetPassword = findViewById(R.id.btn_SendToResetPassword);
+
+
+        //Animacion para el texto de bienvenida y el logo
+        TextView welcomeMessage = findViewById(R.id.welcomeMessage);
+        ImageView logo = findViewById(R.id.imageView4);
+        Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+        logo.startAnimation(rotateAnimation);
+        Animation fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+        welcomeMessage.startAnimation(fadeIn);
 
         // Configurar el texto "Sign Up" como un hipervínculo
         String text = "¿Don't have an account? Sign Up";

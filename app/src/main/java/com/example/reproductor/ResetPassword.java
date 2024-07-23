@@ -1,10 +1,16 @@
 package com.example.reproductor;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -22,6 +28,7 @@ public class ResetPassword extends AppCompatActivity {
     private String email = "";
     private FirebaseAuth mAuth;
     private ProgressDialog mDialog;
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +40,20 @@ public class ResetPassword extends AppCompatActivity {
         mDialog = new ProgressDialog(this);
         mEditTextEmail = findViewById(R.id.editTextEmail);
         mButtonResetPassword = findViewById(R.id.btn_ResetPassword);
+        textView = findViewById(R.id.loginNow);
+
+        textView.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), Login.class);
+            startActivity(intent);
+            finish();
+        });
+
+        TextView resetPasswordMessage = findViewById(R.id.resetPasswordMessage);
+        ImageView logo = findViewById(R.id.imageView4);
+        Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+        logo.startAnimation(rotateAnimation);
+        Animation fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+        resetPasswordMessage.startAnimation(fadeIn);
 
         mButtonResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override

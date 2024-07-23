@@ -1,103 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:background="@android:color/black"
-    android:orientation="vertical"
+    android:background="@android:color/white"
     android:padding="16dp"
     tools:context=".Login">
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        app:srcCompat="@drawable/logo"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="20dp" />
+
+    <TextView
+        android:id="@+id/welcomeMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome to E-beats!"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:textColor="@color/blue_text"
+        android:layout_below="@id/imageView4"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"/>
+
     <LinearLayout
+        android:id="@+id/loginLayout"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/rounded_background2"
+        android:background="@drawable/border"
         android:gravity="center"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:layout_below="@id/welcomeMessage"
+        android:layout_centerHorizontal="true">
 
-    <TextView
-        android:id="@+id/login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Login"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="20dp"
-        android:textColor="@android:color/black"/>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="260dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/email"
-            android:hint="Email"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/login"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/blue_text"/>
-    </com.google.android.material.textfield.TextInputLayout>
+            android:text="Login"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"
+            android:textColor="@android:color/black"
+            android:layout_gravity="center"/>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="260dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/password"
-            android:hint="Password"
-            android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="260dp"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:textColor="@color/blue_text"/>
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginBottom="16dp">
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email"
+                android:hint="Email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blue_text"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        android:id="@+id/btn_SendToResetPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:text="Forgot your password?"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:textColor="@color/blue_text"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="9dp"/>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_gravity="center"
-        android:layout_marginBottom="24dp" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password"
+                android:hint="Password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:textColor="@color/blue_text"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/btn_login"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:text="Login"
-        android:textColor="@android:color/black"
-        android:backgroundTint="@color/blue_buttons"
-        android:padding="12dp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        <TextView
+            android:id="@+id/btn_SendToResetPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Forgot your password?"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/blue_text"
+            android:layout_marginBottom="16dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="9dp"/>
 
-    <TextView
-        android:id="@+id/registerNow"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:clickable="true"
-        android:focusable="true" />
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:layout_marginBottom="24dp" />
 
-</LinearLayout>
-</LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_login"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/blue_buttons"
+            android:padding="12dp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/registerNow"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </LinearLayout>
+
+</RelativeLayout>

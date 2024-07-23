@@ -17,11 +17,11 @@
         <activity
             android:name=".ResetPassword"
             android:exported="false"
-            android:theme="@style/Theme.Reproductor.NoActionBar"/>
+            android:theme="@style/Theme.Reproductor.NoActionBar" />
         <activity
             android:name=".Home"
             android:exported="false"
-            android:theme="@style/Theme.Reproductor.NoActionBar"/>
+            android:theme="@style/Theme.Reproductor.NoActionBar" />
         <activity
             android:name=".Register"
             android:exported="true"
@@ -32,6 +32,7 @@
             android:theme="@style/Theme.Reproductor.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
