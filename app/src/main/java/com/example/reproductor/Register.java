@@ -23,13 +23,16 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class Register extends AppCompatActivity {
 
-    TextInputEditText editTextEmail, editTextPassword, editTextConfirmPassword;
-    TextInputLayout passwordLayout, confirmPasswordLayout;
+    TextInputEditText editTextEmail, editTextPassword, editTextConfirmPassword, editTextUsername;
+    TextInputLayout passwordLayout, confirmPasswordLayout, usernameLayout;
     Button btnRegister;
     FirebaseAuth mAuth;
+    DatabaseReference mDatabase;
     ProgressBar progressBar;
     TextView textView;
 
@@ -40,6 +43,8 @@ public class Register extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         editTextConfirmPassword = findViewById(R.id.confirmPassword);
@@ -48,14 +53,14 @@ public class Register extends AppCompatActivity {
         btnRegister = findViewById(R.id.btn_register);
         progressBar = findViewById(R.id.progressBar);
         textView = findViewById(R.id.loginNow);
+        editTextUsername = findViewById(R.id.name);
+        usernameLayout = findViewById(R.id.usernameLayout);
 
         textView.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), Login.class);
             startActivity(intent);
             finish();
         });
-
-
 
         TextView registerMessage = findViewById(R.id.registerMessage);
         ImageView logo = findViewById(R.id.imageView4);
@@ -67,11 +72,17 @@ public class Register extends AppCompatActivity {
         btnRegister.setOnClickListener(v -> {
             progressBar.setVisibility(View.VISIBLE);
             String email = String.valueOf(editTextEmail.getText());
+            String username = String.valueOf(editTextUsername.getText());
             String password = String.valueOf(editTextPassword.getText());
             String confirmPassword = String.valueOf(editTextConfirmPassword.getText());
 
             if (TextUtils.isEmpty(email)) {
                 Toast.makeText(Register.this, "Enter email", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+            if (TextUtils.isEmpty(username)) {
+                Toast.makeText(Register.this, "Enter username", Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
                 return;
             }
@@ -98,18 +109,31 @@ public class Register extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 if (user != null) {
-                                    user.sendEmailVerification()
+                                    // Guarda los datos en Firebase Realtime Database
+                                    String userId = user.getUid();
+                                    User userProfile = new User(username, email, password);
+                                    mDatabase.child("users").child(userId).setValue(userProfile)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
-                                                        Toast.makeText(Register.this, "Verification email sent. Please check your email.", Toast.LENGTH_LONG).show();
-                                                        mAuth.signOut();
-                                                        Intent intent = new Intent(getApplicationContext(), Login.class);
-                                                        startActivity(intent);
-                                                        finish();
+                                                        user.sendEmailVerification()
+                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                        if (task.isSuccessful()) {
+                                                                            Toast.makeText(Register.this, "Verification email sent. Please check your email.", Toast.LENGTH_LONG).show();
+                                                                            mAuth.signOut();
+                                                                            Intent intent = new Intent(getApplicationContext(), Login.class);
+                                                                            startActivity(intent);
+                                                                            finish();
+                                                                        } else {
+                                                                            Toast.makeText(Register.this, "Failed to send verification email.", Toast.LENGTH_SHORT).show();
+                                                                        }
+                                                                    }
+                                                                });
                                                     } else {
-                                                        Toast.makeText(Register.this, "Failed to send verification email.", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(Register.this, "Failed to save user data.", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
                                             });
@@ -120,5 +144,22 @@ public class Register extends AppCompatActivity {
                         }
                     });
         });
+    }
+
+    // Clase interna para almacenar la información del usuario
+    public static class User {
+        public String username;
+        public String email;
+        public String password;
+
+        public User() {
+            // Constructor vacío necesario para Firebase
+        }
+
+        public User(String username, String email, String password) {
+            this.username = username;
+            this.email = email;
+            this.password = password;
+        }
     }
 }

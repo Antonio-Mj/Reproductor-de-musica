@@ -42,8 +42,10 @@ public class Login extends AppCompatActivity {
         super.onStart();
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        //cambiar a mainActivity despues
         if (currentUser != null && currentUser.isEmailVerified()) {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent intent = new Intent(getApplicationContext(), Home.class);
             startActivity(intent);
             finish();
         }
@@ -128,8 +130,8 @@ public class Login extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 if (user != null && user.isEmailVerified()) {
-                                    Toast.makeText(Login.this, "Login successful.", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                    Toast.makeText(Login.this, "", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(getApplicationContext(), Home.class);
                                     startActivity(intent);
                                     finish();
                                 } else if (user != null && !user.isEmailVerified()) {

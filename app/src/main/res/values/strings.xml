@@ -7,4 +7,6 @@
     <string name="click_to_register">Click to register</string>
     <string name="back_to_login">Back to login</string>
     <string name="cancel">cancel</string>
+    <string name="profile_details">Profile_details</string>
+    <string name="notifications">notifications</string>
 </resources>
