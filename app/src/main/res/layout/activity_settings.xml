@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
+    android:background="@color/black"
     tools:context=".Settings">
 
     <ScrollView
@@ -13,19 +14,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginTop="30dp">
 
-            <!-- Título de la sección -->
+            <!-- Section Title -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Configuraciones"
+                android:text="Settings"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@color/blue_text"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- Reproducción automática -->
+            <!-- Auto Play -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -36,8 +38,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="@color/blue_text"
-                    android:text="Reproducción automática"
+                    android:textColor="@color/white"
+                    android:text="Auto Play"
                     android:textSize="16sp" />
 
                 <Switch
@@ -46,7 +48,7 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
-            <!-- Repetición de la lista de reproducción -->
+            <!-- Repeat Playlist -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -57,8 +59,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="@color/blue_text"
-                    android:text="Repetir lista de reproducción"
+                    android:textColor="@color/white"
+                    android:text="Repeat Playlist"
                     android:textSize="16sp" />
 
                 <Switch
@@ -67,7 +69,7 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
-            <!-- Reproducción aleatoria -->
+            <!-- Shuffle Playback -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -78,8 +80,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="@color/blue_text"
-                    android:text="Reproducción aleatoria"
+                    android:textColor="@color/white"
+                    android:text="Shuffle Playback"
                     android:textSize="16sp" />
 
                 <Switch
@@ -88,7 +90,7 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
-            <!-- Calidad de audio -->
+            <!-- Audio Quality -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -99,8 +101,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="@color/blue_text"
-                    android:text="Calidad de audio"
+                    android:textColor="@color/white"
+                    android:text="Audio Quality"
                     android:textSize="16sp" />
 
                 <Spinner
@@ -110,7 +112,7 @@
                     android:entries="@array/audio_quality_options" />
             </LinearLayout>
 
-            <!-- Volumen inicial -->
+            <!-- Language -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -121,19 +123,41 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="@color/blue_text"
-                    android:text="Volumen inicial"
+                    android:textColor="@color/white"
+                    android:text="Language"
+                    android:textSize="16sp" />
+
+                <Spinner
+                    android:id="@+id/spinner_language"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/audio_language_options" />
+            </LinearLayout>
+
+            <!-- Initial Volume -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/white"
+                    android:text="Initial Volume"
                     android:textSize="16sp" />
 
                 <SeekBar
                     android:id="@+id/seekbar_initial_volume"
-                    android:layout_width="wrap_content"
+                    android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:max="100"
                     android:progress="50" />
             </LinearLayout>
 
-            <!-- Guardar posición de reproducción -->
+            <!-- Save Playback Position -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -144,8 +168,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="@color/blue_text"
-                    android:text="Guardar posición de reproducción"
+                    android:textColor="@color/white"
+                    android:text="Save Playback Position"
                     android:textSize="16sp" />
 
                 <Switch
@@ -154,7 +178,7 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
-            <!-- Tiempo de crossfade -->
+            <!-- Crossfade Duration -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -165,8 +189,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="@color/blue_text"
-                    android:text="Tiempo de crossfade (ms)"
+                    android:textColor="@color/white"
+                    android:text="Crossfade Duration (ms)"
                     android:textSize="16sp" />
 
                 <EditText
@@ -174,8 +198,29 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:inputType="number"
+                    android:textColorHint="@color/white"
                     android:hint="2000" />
-            </LinearLayout>
+            </LinearLayout><LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/red_alert"
+                android:text="Log out"
+                android:textSize="16sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_back"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/logoutapp"
+                android:onClick="Back"
+                android:text=""/>
+        </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

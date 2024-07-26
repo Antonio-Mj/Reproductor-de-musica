@@ -5,45 +5,468 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".Home">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginTop="25dp"
-        android:padding="8dp">
+        android:layout_height="match_parent">
 
-        <!-- ImageView for User Profile -->
-        <ImageView
-            android:id="@+id/profile_image"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/user"
-            android:contentDescription="@string/profile_details"/>
-
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:text=""/>
+            android:orientation="vertical">
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-        
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="23dp"
+                android:background="@color/black"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <ImageView
+                    android:id="@+id/profile_image"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/profile_details"
+                    android:src="@drawable/user" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/notifications"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="5dp"
+                    android:contentDescription="@string/devices"
+                    android:src="@drawable/devices" />
+
+                <ImageView
+                    android:id="@+id/devices"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/notifications"
+                    android:src="@drawable/notifications" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/recentTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Recientes"
+                android:textColor="@color/blue_text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <ImageView
+                        android:id="@+id/imageViewpp"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/imagen1"
+                        android:src="@drawable/song1" />
+
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/imagen2"
+                        android:src="@drawable/song2" />
+
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/imagen3"
+                        android:src="@drawable/song3" />
+
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/imagen4"
+                        android:src="@drawable/song4" />
+
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/imagen5"
+                        android:src="@drawable/song5" />
+
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/imagen6"
+                        android:src="@drawable/song6" />
+
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/imagen7"
+                        android:src="@drawable/song7" />
+
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/imagen8"
+                        android:src="@drawable/song8" />
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/artistsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="Artistas"
+                android:textColor="@color/blue_text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginEnd="8dp"
+                        app:cardCornerRadius="60dp"
+                        app:cardElevation="4dp">
+
+                        <ImageView
+                            android:id="@+id/image_view1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="artist1"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/anuel" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginEnd="8dp"
+                        app:cardCornerRadius="60dp"
+                        app:cardElevation="4dp">
+
+                        <ImageView
+                            android:id="@+id/image_view2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="artist2"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/bad" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginEnd="8dp"
+                        app:cardCornerRadius="60dp"
+                        app:cardElevation="4dp">
+
+                        <ImageView
+                            android:id="@+id/image_view3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="artist3"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/cro" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginEnd="8dp"
+                        app:cardCornerRadius="60dp"
+                        app:cardElevation="4dp">
+
+                        <ImageView
+                            android:id="@+id/image_view4"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="artist4"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/eladio" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginEnd="8dp"
+                        app:cardCornerRadius="60dp"
+                        app:cardElevation="4dp">
+
+                        <ImageView
+                            android:id="@+id/image_view5"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="artist5"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/lit" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginEnd="8dp"
+                        app:cardCornerRadius="60dp"
+                        app:cardElevation="4dp">
+
+                        <ImageView
+                            android:id="@+id/image_view6"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="artist6"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/tiago" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginEnd="8dp"
+                        app:cardCornerRadius="60dp"
+                        app:cardElevation="4dp">
+
+                        <ImageView
+                            android:id="@+id/image_view7"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="artist7"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/rolling" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginEnd="8dp"
+                        app:cardCornerRadius="60dp"
+                        app:cardElevation="4dp">
+
+                        <ImageView
+                            android:id="@+id/image_view8"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="artist8"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/elduki" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginEnd="8dp"
+                        app:cardCornerRadius="60dp"
+                        app:cardElevation="4dp">
+
+                        <ImageView
+                            android:id="@+id/image_view9"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="artist6"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/laele" />
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/podcastTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Podcasts"
+                android:textColor="@color/blue_text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <ImageView
+                        android:id="@+id/imageViewpd"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="podcast1"
+                        android:src="@drawable/clase" />
+
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="podcast2"
+                        android:src="@drawable/cotorrisa" />
+
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="podcast3"
+                        android:src="@drawable/gusgri" />
+
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="podcast4"
+                        android:src="@drawable/pension" />
+
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="podcast5"
+                        android:src="@drawable/relatos" />
+
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="podcast6"
+                        android:src="@drawable/song6" />
+
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="podcast7"
+                        android:src="@drawable/song7" />
+
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="podcast8"
+                        android:src="@drawable/song8" />
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+
+        </LinearLayout>
+
+
+    </ScrollView>
+    <LinearLayout
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@color/black"
+        android:gravity="center_vertical"
+        android:layout_alignParentBottom="true">
+
+        <!-- Small song image -->
         <ImageView
-            android:id="@+id/notifications"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/notifications"
-            android:contentDescription="@string/notifications"/>
+            android:id="@+id/song_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/song1"
+            android:contentDescription="@string/name_song"
+            android:layout_marginEnd="8dp"/>
 
+        <!-- Song info -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- Song name -->
+            <TextView
+                android:id="@+id/song_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre de la canción"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- Artist name -->
+            <TextView
+                android:id="@+id/song_artist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Artista"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <!-- Devices icon -->
+        <ImageView
+            android:id="@+id/icon_devices"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/devices"
+            android:contentDescription="@string/icon_devices"
+            android:layout_marginEnd="16dp"/>
+
+        <!-- Favorite icon -->
+        <ImageView
+            android:id="@+id/icon_favorite"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/like_off"
+            android:contentDescription="@string/icon_like"
+            android:layout_marginEnd="16dp"/>
+
+        <!-- Play/Pause icon -->
+        <ImageView
+            android:id="@+id/icon_play_pause"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/play"
+            android:contentDescription="@string/play_pause"/>
     </LinearLayout>
 
 </RelativeLayout>
+

@@ -9,4 +9,17 @@
     <string name="cancel">cancel</string>
     <string name="profile_details">Profile_details</string>
     <string name="notifications">notifications</string>
+    <string name="devices">Devices</string>
+    <string name="imagen1">imagen1</string>
+    <string name="imagen2">imagen2</string>
+    <string name="imagen3">imagen3</string>
+    <string name="imagen4">imagen4</string>
+    <string name="imagen5">imagen5</string>
+    <string name="imagen6">imagen6</string>
+    <string name="imagen7">imagen7</string>
+    <string name="imagen8">imagen8</string>
+    <string name="name_song">name_song</string>
+    <string name="icon_devices">icon_devices</string>
+    <string name="icon_like">icon_like</string>
+    <string name="play_pause">play_pause</string>
 </resources>

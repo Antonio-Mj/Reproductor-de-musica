@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseUser user;
 
-    Button play_pause, btn_repetir, btn_anterior, btn_siguiente, btn_detener, btn_random, btn_like, btn_addlist, btn_back;
+    Button play_pause, btn_repetir, btn_anterior, btn_siguiente, btn_detener, btn_random, btn_like, btn_addlist;
     SeekBar seekBar, volumeBar;
     ImageView iv;
     TextView timerAbsolute, timerNegative, titleSong;
@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
         timerNegative = findViewById(R.id.timer_negative);
 
         auth = FirebaseAuth.getInstance();
-        btn_back = findViewById(R.id.btn_back);
         user = auth.getCurrentUser();
 
         if (user == null) {
@@ -79,16 +78,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-        btn_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(), Login.class);
-                startActivity(intent);
-                finish();
-            }
-        });
 
         // Animación para que gire la imagen
         Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
