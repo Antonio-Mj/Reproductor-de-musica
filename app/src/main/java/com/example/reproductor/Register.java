@@ -1,5 +1,6 @@
 package com.example.reproductor;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -26,10 +27,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Calendar;
+
 public class Register extends AppCompatActivity {
 
-    TextInputEditText editTextEmail, editTextPassword, editTextConfirmPassword, editTextUsername;
-    TextInputLayout passwordLayout, confirmPasswordLayout, usernameLayout;
+    TextInputEditText editTextEmail, editTextPassword, editTextConfirmPassword, editTextUsername, editTextAddress, editTextDateOfBirth;
+    TextInputLayout passwordLayout, confirmPasswordLayout, usernameLayout,addressLayout, dateOfBirthLayout;;
     Button btnRegister;
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
@@ -45,6 +48,7 @@ public class Register extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
+        // Inicializar campos
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         editTextConfirmPassword = findViewById(R.id.confirmPassword);
@@ -54,7 +58,28 @@ public class Register extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         textView = findViewById(R.id.loginNow);
         editTextUsername = findViewById(R.id.name);
+        editTextAddress = findViewById(R.id.address);
+        editTextDateOfBirth = findViewById(R.id.dateOfBirth);
+        addressLayout = findViewById(R.id.addresslLayout);
+        dateOfBirthLayout = findViewById(R.id.dateOfBirthLayout);
         usernameLayout = findViewById(R.id.usernameLayout);
+
+        // Configurar DatePickerDialog
+        editTextDateOfBirth.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    Register.this,
+                    (view, selectedYear, selectedMonth, selectedDay) -> {
+                        String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
+                        editTextDateOfBirth.setText(selectedDate);
+                    }, year, month, day);
+
+            datePickerDialog.show();
+        });
 
         textView.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), Login.class);
@@ -62,19 +87,14 @@ public class Register extends AppCompatActivity {
             finish();
         });
 
-        TextView registerMessage = findViewById(R.id.registerMessage);
-        ImageView logo = findViewById(R.id.imageView4);
-        Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
-        logo.startAnimation(rotateAnimation);
-        Animation fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
-        registerMessage.startAnimation(fadeIn);
-
         btnRegister.setOnClickListener(v -> {
             progressBar.setVisibility(View.VISIBLE);
             String email = String.valueOf(editTextEmail.getText());
             String username = String.valueOf(editTextUsername.getText());
             String password = String.valueOf(editTextPassword.getText());
             String confirmPassword = String.valueOf(editTextConfirmPassword.getText());
+            String address = String.valueOf(editTextAddress.getText());
+            String dateOfBirth = String.valueOf(editTextDateOfBirth.getText());
 
             if (TextUtils.isEmpty(email)) {
                 Toast.makeText(Register.this, "Enter email", Toast.LENGTH_SHORT).show();
@@ -88,6 +108,16 @@ public class Register extends AppCompatActivity {
             }
             if (TextUtils.isEmpty(password)) {
                 Toast.makeText(Register.this, "Enter password", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+            if (TextUtils.isEmpty(address)) {
+                Toast.makeText(Register.this, "Enter address", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+            if (TextUtils.isEmpty(dateOfBirth)) {
+                Toast.makeText(Register.this, "Enter date of birth", Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
                 return;
             }
@@ -111,7 +141,7 @@ public class Register extends AppCompatActivity {
                                 if (user != null) {
                                     // Guarda los datos en Firebase Realtime Database
                                     String userId = user.getUid();
-                                    User userProfile = new User(username, email, password);
+                                    User userProfile = new User(username, email, password, address, dateOfBirth);
                                     mDatabase.child("users").child(userId).setValue(userProfile)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
@@ -146,20 +176,25 @@ public class Register extends AppCompatActivity {
         });
     }
 
+
     // Clase interna para almacenar la información del usuario
     public static class User {
         public String username;
         public String email;
         public String password;
+        public String address;
+        public String dateOfBirth;
 
         public User() {
             // Constructor vacío necesario para Firebase
         }
 
-        public User(String username, String email, String password) {
+        public User(String username, String email, String password, String address, String dateOfBirth) {
             this.username = username;
             this.email = email;
             this.password = password;
+            this.address = address;
+            this.dateOfBirth = dateOfBirth;
         }
     }
 }
