@@ -1,5 +1,6 @@
 package com.example.reproductor;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,8 +9,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -21,7 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 public class ViewInformation extends AppCompatActivity {
 
     private EditText etUsername, etEmail, etAddress, etBirthday, etPassword;
-    private Button btnSave, btnBack;
+    private Button btnSave, btnBack, btnDelete;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
 
@@ -37,6 +41,7 @@ public class ViewInformation extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         btnSave = findViewById(R.id.btnSave);
         btnBack = findViewById(R.id.btnBack);
+        btnDelete = findViewById(R.id.btnDelete);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -73,6 +78,10 @@ public class ViewInformation extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+
+        btnDelete.setOnClickListener(v -> {
+            showDeleteAccountDialog();
+        });
     }
 
     private void saveUserInformation() {
@@ -99,6 +108,59 @@ public class ViewInformation extends AppCompatActivity {
                             Toast.makeText(ViewInformation.this, "Failed to update information", Toast.LENGTH_SHORT).show();
                         }
                     });
+        }
+    }
+
+    private void showDeleteAccountDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete Account");
+        builder.setMessage("Are you sure you want to delete your account? Please enter your password to confirm:");
+
+        final EditText input = new EditText(this);
+        builder.setView(input);
+
+        builder.setPositiveButton("Delete", (dialog, which) -> {
+            String password = input.getText().toString();
+            if (!password.isEmpty()) {
+                deleteUserAccount(password);
+            } else {
+                Toast.makeText(ViewInformation.this, "Password is required", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+
+    private void deleteUserAccount(String password) {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), password);
+            user.reauthenticate(credential).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    String userId = user.getUid();
+                    mDatabase.child("users").child(userId).removeValue()
+                            .addOnCompleteListener(task1 -> {
+                                if (task1.isSuccessful()) {
+                                    user.delete().addOnCompleteListener(task2 -> {
+                                        if (task2.isSuccessful()) {
+                                            Toast.makeText(ViewInformation.this, "Account deleted successfully", Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(ViewInformation.this, MainActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+                                            Toast.makeText(ViewInformation.this, "Failed to delete account", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                } else {
+                                    Toast.makeText(ViewInformation.this, "Failed to delete user data", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                } else {
+                    Toast.makeText(ViewInformation.this, "Authentication failed", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 

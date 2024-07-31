@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ViewInformation">
-
+    
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -25,26 +25,15 @@
 
             <EditText
                 android:id="@+id/etUsername"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Username"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/ivEditUsername"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginEnd="8dp"/>
-
-            <ImageView
-                android:id="@+id/ivEditUsername"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/edit"
-                android:contentDescription="Edit Username"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -54,25 +43,14 @@
 
             <EditText
                 android:id="@+id/etEmail"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Email"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/ivEditEmail"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginEnd="8dp"/>
-
-            <ImageView
-                android:id="@+id/ivEditEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/edit"
-                android:contentDescription="Edit Email"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -82,26 +60,17 @@
 
             <EditText
                 android:id="@+id/etPassword"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Password"
                 android:textSize="18sp"
                 android:inputType="textPassword"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/ivEditPassword"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginEnd="8dp"/>
 
-            <ImageView
-                android:id="@+id/ivEditPassword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/edit"
-                android:contentDescription="Edit Password"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -111,25 +80,15 @@
 
             <EditText
                 android:id="@+id/etAddress"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Address"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/ivEditAddress"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginEnd="8dp"/>
 
-            <ImageView
-                android:id="@+id/ivEditAddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/edit"
-                android:contentDescription="Edit Address"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -139,25 +98,14 @@
 
             <EditText
                 android:id="@+id/etBirthday"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Day of birthday"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/ivEditBirthday"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginEnd="8dp"/>
-
-            <ImageView
-                android:id="@+id/ivEditBirthday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/edit"
-                android:contentDescription="Edit Birthday"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
