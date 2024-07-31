@@ -1,30 +1,27 @@
 package com.example.reproductor;
 
-import android.content.DialogInterface;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 public class ViewInformation extends AppCompatActivity {
 
-    private EditText etUsername, etEmail, etAddress, etBirthday, etPassword;
+    private EditText etUsername, etEmail, etAddress, etBirthday;
     private Button btnSave, btnBack, btnDelete;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -38,7 +35,6 @@ public class ViewInformation extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etAddress = findViewById(R.id.etAddress);
         etBirthday = findViewById(R.id.etBirthday);
-        etPassword = findViewById(R.id.etPassword);
         btnSave = findViewById(R.id.btnSave);
         btnBack = findViewById(R.id.btnBack);
         btnDelete = findViewById(R.id.btnDelete);
@@ -56,7 +52,6 @@ public class ViewInformation extends AppCompatActivity {
                     if (userProfile != null) {
                         etUsername.setText(userProfile.username);
                         etEmail.setText(userProfile.email);
-                        etPassword.setText(userProfile.password);
                         etAddress.setText(userProfile.address);
                         etBirthday.setText(userProfile.dateOfBirth);
                     }
@@ -64,14 +59,12 @@ public class ViewInformation extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    Toast.makeText(ViewInformation.this, "Failed to load user data.", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(ViewInformation.this, "Failed to load user data.", Toast.LENGTH_SHORT).show();
                 }
             });
         }
 
-        btnSave.setOnClickListener(v -> {
-            saveUserInformation();
-        });
+        btnSave.setOnClickListener(v -> saveUserInformation());
 
         btnBack.setOnClickListener(v -> {
             Intent intent = new Intent(ViewInformation.this, Home.class);
@@ -79,19 +72,16 @@ public class ViewInformation extends AppCompatActivity {
             finish();
         });
 
-        btnDelete.setOnClickListener(v -> {
-            showDeleteAccountDialog();
-        });
+        btnDelete.setOnClickListener(v -> showDeleteAccountDialog());
     }
 
     private void saveUserInformation() {
         String username = etUsername.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
-        String password = etPassword.getText().toString().trim();
         String address = etAddress.getText().toString().trim();
         String dateOfBirth = etBirthday.getText().toString().trim();
 
-        if (username.isEmpty() || email.isEmpty() || password.isEmpty() || address.isEmpty() || dateOfBirth.isEmpty()) {
+        if (username.isEmpty() || email.isEmpty() || address.isEmpty() || dateOfBirth.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -99,7 +89,7 @@ public class ViewInformation extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             String userId = user.getUid();
-            User updatedUser = new User(username, email, password, address, dateOfBirth);
+            User updatedUser = new User(username, email, address, dateOfBirth);
             mDatabase.child("users").child(userId).setValue(updatedUser)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
@@ -114,53 +104,36 @@ public class ViewInformation extends AppCompatActivity {
     private void showDeleteAccountDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Delete Account");
-        builder.setMessage("Are you sure you want to delete your account? Please enter your password to confirm:");
+        builder.setMessage("Are you sure you want to delete your account?");
 
-        final EditText input = new EditText(this);
-        builder.setView(input);
-
-        builder.setPositiveButton("Delete", (dialog, which) -> {
-            String password = input.getText().toString();
-            if (!password.isEmpty()) {
-                deleteUserAccount(password);
-            } else {
-                Toast.makeText(ViewInformation.this, "Password is required", Toast.LENGTH_SHORT).show();
-            }
-        });
+        builder.setPositiveButton("Delete", (dialog, which) -> deleteUserAccount());
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
     }
 
-    private void deleteUserAccount(String password) {
+    private void deleteUserAccount() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), password);
-            user.reauthenticate(credential).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    String userId = user.getUid();
-                    mDatabase.child("users").child(userId).removeValue()
-                            .addOnCompleteListener(task1 -> {
-                                if (task1.isSuccessful()) {
-                                    user.delete().addOnCompleteListener(task2 -> {
-                                        if (task2.isSuccessful()) {
-                                            Toast.makeText(ViewInformation.this, "Account deleted successfully", Toast.LENGTH_SHORT).show();
-                                            Intent intent = new Intent(ViewInformation.this, MainActivity.class);
-                                            startActivity(intent);
-                                            finish();
-                                        } else {
-                                            Toast.makeText(ViewInformation.this, "Failed to delete account", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
+            String userId = user.getUid();
+            mDatabase.child("users").child(userId).removeValue()
+                    .addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            user.delete().addOnCompleteListener(task2 -> {
+                                if (task2.isSuccessful()) {
+                                    Toast.makeText(ViewInformation.this, "Account deleted successfully", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(ViewInformation.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
                                 } else {
-                                    Toast.makeText(ViewInformation.this, "Failed to delete user data", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ViewInformation.this, "Failed to delete account", Toast.LENGTH_SHORT).show();
                                 }
                             });
-                } else {
-                    Toast.makeText(ViewInformation.this, "Authentication failed", Toast.LENGTH_SHORT).show();
-                }
-            });
+                        } else {
+                            Toast.makeText(ViewInformation.this, "Failed to delete user data", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }
     }
 
@@ -168,7 +141,6 @@ public class ViewInformation extends AppCompatActivity {
     public static class User {
         public String username;
         public String email;
-        public String password;
         public String address;
         public String dateOfBirth;
 
@@ -176,10 +148,9 @@ public class ViewInformation extends AppCompatActivity {
             // Constructor vacío necesario para Firebase
         }
 
-        public User(String username, String email, String password, String address, String dateOfBirth) {
+        public User(String username, String email, String address, String dateOfBirth) {
             this.username = username;
             this.email = email;
-            this.password = password;
             this.address = address;
             this.dateOfBirth = dateOfBirth;
         }

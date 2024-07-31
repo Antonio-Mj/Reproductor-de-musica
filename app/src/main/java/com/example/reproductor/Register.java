@@ -74,8 +74,13 @@ public class Register extends AppCompatActivity {
             DatePickerDialog datePickerDialog = new DatePickerDialog(
                     Register.this,
                     (view, selectedYear, selectedMonth, selectedDay) -> {
-                        String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
-                        editTextDateOfBirth.setText(selectedDate);
+                        // Validar que la fecha seleccionada esté dentro del rango permitido
+                        if (selectedYear >= 2001 && selectedYear <= year) {
+                            String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
+                            editTextDateOfBirth.setText(selectedDate);
+                        } else {
+                            Toast.makeText(Register.this, "Please select a year between 2001 and " + year, Toast.LENGTH_SHORT).show();
+                        }
                     }, year, month, day);
 
             datePickerDialog.show();
