@@ -22,4 +22,5 @@
     <string name="icon_devices">icon_devices</string>
     <string name="icon_like">icon_like</string>
     <string name="play_pause">play_pause</string>
+    <string name="show_hide_password">Show/Hide Password</string>
 </resources>
