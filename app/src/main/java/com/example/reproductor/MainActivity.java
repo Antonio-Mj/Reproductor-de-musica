@@ -3,7 +3,6 @@ package com.example.reproductor;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView iv;
     TextView timerAbsolute, timerNegative, titleSong;
     private List<String> songTitles;
-    int posicion = 0, currentSongIndex;
+    int posicion = 0;
     MediaPlayer[] vectormp = new MediaPlayer[8];
     int position = 0;
     Handler handler = new Handler();
@@ -42,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
     boolean isLiked = false, isRandom = false;
     Random random = new Random();
     List<Integer> playedPositions = new ArrayList<>();
-    AudioManager audioManager;
     BroadcastReceiver volumeReceiver;
 
     @Override
@@ -211,7 +209,6 @@ public class MainActivity extends AppCompatActivity {
             vectormp[posicion].start();
             play_pause.setBackgroundResource(R.drawable.pause);
             // Actualizar la seekbar y el contador
-            actualizarSeekBar();
             actualizarDuracionTotal();
             iniciarContadorYActualizarSeekBar();
         }
@@ -269,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
         actualizarDuracionTotal();
         handler.removeCallbacksAndMessages(null);
         seekBar.setProgress(0);
-        actualizarSeekBar();
+
 
         // Iniciar el contador de tiempo transcurrido
         iniciarContadorYActualizarSeekBar();
@@ -315,7 +312,6 @@ public class MainActivity extends AppCompatActivity {
         actualizarDuracionTotal();
         handler.removeCallbacksAndMessages(null);
         seekBar.setProgress(0);
-        actualizarSeekBar();
         iniciarContadorYActualizarSeekBar();
     }
 
@@ -394,60 +390,6 @@ public class MainActivity extends AppCompatActivity {
             return mediaResources[position];
         } else {
             return R.raw.pista_uno;
-        }
-    }
-
-    // Actualizar la barra de progreso del MediaPlayer actual
-    private void actualizarSeekBar() {
-        if (vectormp[posicion] != null) {
-            seekBar.setMax(vectormp[posicion].getDuration());
-            // Actualizar la seekbar cada segundo
-            handler.postDelayed(updateSeekBar, 1000);
-
-            // Listener para detectar el final de la canción
-            vectormp[posicion].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    // Detener y liberar el MediaPlayer actual
-                    if (mp != null) {
-                        mp.stop();
-                        mp.release();
-                        vectormp[posicion] = null;
-                    }
-
-                    // Avanzar a la siguiente canción
-                    if (isRandom) {
-                        int newPosicion;
-                        do {
-                            newPosicion = random.nextInt(vectormp.length);
-                        } while (newPosicion == posicion || playedPositions.contains(newPosicion));
-                        posicion = newPosicion;
-                        playedPositions.add(posicion);
-                        if (playedPositions.size() == vectormp.length) {
-                            playedPositions.clear();
-                        }
-                    } else {
-                        posicion = (posicion + 1) % vectormp.length;
-                    }
-
-                    // Crear y comenzar el nuevo MediaPlayer para la siguiente canción
-                    vectormp[posicion] = MediaPlayer.create(MainActivity.this, getMediaResource(posicion));
-                    vectormp[posicion].start();
-                    play_pause.setBackgroundResource(R.drawable.pause);
-
-                    // Actualizar la imagen y el título de la nueva canción
-                    actualizarImagen();
-                    updateSongTitle();
-                    actualizarDuracionTotal();
-
-                    // Eliminar todos los callbacks y mensajes del handler
-                    handler.removeCallbacks(updateSeekBar);
-
-                    // Actualizar la SeekBar
-                    seekBar.setProgress(0);
-                    actualizarSeekBar();
-                }
-            });
         }
     }
 
