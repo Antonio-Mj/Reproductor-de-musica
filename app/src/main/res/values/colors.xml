@@ -7,6 +7,7 @@
     <color name="red_alert">#FF0000</color>
     <color name="vivid_red">#E11D48</color>
     <color name="green">#00FF00</color>
+    <color name="green_btn">#008000</color>
     <color name="blue">#0000FF</color>
     <color name="yellow">#FFFF00</color>
     <color name="purple">#800080</color>

@@ -43,7 +43,6 @@ public class Login extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        //cambiar a mainActivity despues
         if (currentUser != null && currentUser.isEmailVerified()) {
             Intent intent = new Intent(getApplicationContext(), Home.class);
             startActivity(intent);

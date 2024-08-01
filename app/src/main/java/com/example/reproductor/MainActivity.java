@@ -1,7 +1,6 @@
 package com.example.reproductor;
 
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
@@ -13,13 +12,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.Firebase;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -32,8 +29,8 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseUser user;
 
-    Button play_pause, btn_repetir, btn_anterior, btn_siguiente, btn_detener, btn_random, btn_like, btn_addlist;
-    SeekBar seekBar, volumeBar;
+    Button play_pause, btn_repetir, btn_anterior, btn_siguiente, btn_random, btn_like, btn_addlist;
+    SeekBar seekBar;
     ImageView iv;
     TextView timerAbsolute, timerNegative, titleSong;
     private List<String> songTitles;
@@ -58,12 +55,10 @@ public class MainActivity extends AppCompatActivity {
         btn_repetir = findViewById(R.id.btn_norepetir);
         btn_anterior = findViewById(R.id.btn_anterior);
         btn_siguiente = findViewById(R.id.btn_siguiente);
-        btn_detener = findViewById(R.id.btn_detener);
         btn_like = findViewById(R.id.btn_like);
         btn_addlist = findViewById(R.id.btn_addlist);
         btn_random = findViewById(R.id.btn_random);
         seekBar = findViewById(R.id.seekBar);
-        volumeBar = findViewById(R.id.volumeBar);
         titleSong = findViewById(R.id.title_song);
         iv = findViewById(R.id.imageView);
         timerAbsolute = findViewById(R.id.timer_absolute);
@@ -109,45 +104,28 @@ public class MainActivity extends AppCompatActivity {
         btn_repetir.setOnClickListener(this::Repetir);
         btn_anterior.setOnClickListener(this::Anterior);
         btn_siguiente.setOnClickListener(this::Siguiente);
-        btn_detener.setOnClickListener(this::Stop);
         btn_random.setOnClickListener(this::Random);
         btn_addlist.setOnClickListener(this::AddToList);
-
-        // Configuración del volumen inicial y su control
-        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        volumeBar.setMax(maxVolume);
-        volumeBar.setProgress(currentVolume);
-        volumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) {
-                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
 
         // Configuración del SeekBar para la canción actual
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser && vectormp[posicion] != null) {
+                // Si el usuario mueve la seekbar, actualiza el MediaPlayer
+                if (vectormp[posicion] != null && fromUser) {
                     vectormp[posicion].seekTo(progress);
                 }
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // Opcional: Puedes hacer algo cuando el usuario empieza a mover la seekbar
+            }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // Opcional: Puedes hacer algo cuando el usuario deja de mover la seekbar
+            }
         });
 
         // Inicialización de la imagen asociada a la canción actual
@@ -156,27 +134,17 @@ public class MainActivity extends AppCompatActivity {
         // Actualizar el tiempo total de la primera canción
         actualizarDuracionTotal();
 
-        // Registro del BroadcastReceiver para cambios en el volumen
-        volumeReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals("android.media.VOLUME_CHANGED_ACTION")) {
-                    int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-                    volumeBar.setProgress(currentVolume);
-                }
-            }
-        };
-
         // Registro del BroadcastReceiver
         IntentFilter filter = new IntentFilter("android.media.VOLUME_CHANGED_ACTION");
         registerReceiver(volumeReceiver, filter);
     }
-    // Método para iniciar el contador del tiempo transcurrido
-    private void iniciarContador() {
-        // Detener el runnable actual si existeY
+
+    // Método para iniciar el contador del tiempo transcurrido y actualizar la SeekBar
+    private void iniciarContadorYActualizarSeekBar() {
+        // Detener el runnable actual si existe
         handler.removeCallbacksAndMessages(null);
 
-        // Configurar un nuevo runnable para actualizar el contador
+        // Configurar un nuevo runnable para actualizar el contador y la SeekBar
         runnable = new Runnable() {
             @Override
             public void run() {
@@ -184,15 +152,17 @@ public class MainActivity extends AppCompatActivity {
                     // Obtener la posición actual de la canción
                     int currentPosition = vectormp[posicion].getCurrentPosition();
 
-                    // Calcular el tiempo transcurrido en minutos y segundos
+                    // Actualizar el tiempo transcurrido en el TextView
                     int seconds = (currentPosition / 1000) % 60;
                     int minutes = (currentPosition / (1000 * 60)) % 60;
-
-                    // Formatear el tiempo en formato "MM:SS"
                     String time = String.format("%02d:%02d", minutes, seconds);
-
-                    // Actualizar el TextView
                     timerNegative.setText(time);
+
+                    // Actualizar la SeekBar
+                    seekBar.setProgress(currentPosition);
+
+                    // Configurar la SeekBar para el máximo de la duración de la canción
+                    seekBar.setMax(vectormp[posicion].getDuration());
                 }
 
                 // Ejecutar este runnable nuevamente después de 1 segundo
@@ -202,31 +172,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Iniciar el runnable por primera vez
         handler.post(runnable);
-
-
-    // Configurar un nuevo runnable para actualizar el contador
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (vectormp[posicion] != null && vectormp[posicion].isPlaying()) {
-                    // Obtener la posición actual de la canción
-                    int currentPosition = vectormp[posicion].getCurrentPosition();
-
-                    // Calcular el tiempo transcurrido en minutos y segundos
-                    int seconds = (currentPosition / 1000) % 60;
-                    int minutes = (currentPosition / (1000 * 60)) % 60;
-
-                    // Formatear el tiempo en formato "MM:SS"
-                    String time = String.format("%02d:%02d", minutes, seconds);
-
-                    // Actualizar el TextView
-                    timerNegative.setText(time);
-                }
-
-                // Ejecutar este runnable nuevamente después de 1 segundo
-                handler.postDelayed(this, 1000);
-            }
-        };
     }
 
     @Override
@@ -259,38 +204,17 @@ public class MainActivity extends AppCompatActivity {
             // Si la canción está reproduciéndose, pausarla
             vectormp[posicion].pause();
             play_pause.setBackgroundResource(R.drawable.play);
-            //Toast.makeText(this, "Pausa", Toast.LENGTH_SHORT).show();
             // Detener el contador y la actualización de la seekbar
-            handler.removeCallbacksAndMessages(null);
+            handler.removeCallbacks(updateSeekBar);
         } else {
             // Si la canción está pausada, iniciarla
             vectormp[posicion].start();
             play_pause.setBackgroundResource(R.drawable.pause);
-            //Toast.makeText(this, "Play", Toast.LENGTH_SHORT).show();
             // Actualizar la seekbar y el contador
             actualizarSeekBar();
             actualizarDuracionTotal();
-            iniciarContador();
-            actualizarDuracionTotal();
+            iniciarContadorYActualizarSeekBar();
         }
-    }
-
-    // Método para detener la canción
-    public void Stop(View view) {
-        if (vectormp[posicion] != null) {
-            vectormp[posicion].stop();
-            vectormp[posicion].release();
-            vectormp[posicion] = null;
-            //Toast.makeText(this, "Stop", Toast.LENGTH_SHORT).show();
-            handler.removeCallbacksAndMessages(null);
-            seekBar.setProgress(0);
-        }
-
-        // Regresar a la primera canción
-        posicion = 0;
-        vectormp[posicion] = MediaPlayer.create(this, getMediaResource(posicion));
-        actualizarImagen();
-        actualizarDuracionTotal();
     }
 
     // Método para repetir o no repetir la canción
@@ -299,14 +223,11 @@ public class MainActivity extends AppCompatActivity {
             if (vectormp[posicion].isLooping()) {
                 vectormp[posicion].setLooping(false);
                 btn_repetir.setBackgroundResource(R.drawable.repeat);
-                //Toast.makeText(this, "No repetir", Toast.LENGTH_SHORT).show();
             } else {
                 vectormp[posicion].setLooping(true);
                 btn_repetir.setBackgroundResource(R.drawable.repeat_1);
-                //Toast.makeText(this, "Repetir", Toast.LENGTH_SHORT).show();
             }
         } else {
-            //Toast.makeText(this, "No hay una canción cargada", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -351,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
         actualizarSeekBar();
 
         // Iniciar el contador de tiempo transcurrido
-        iniciarContador();
+        iniciarContadorYActualizarSeekBar();
     }
 
     // Método para retroceder a la canción anterior
@@ -395,9 +316,7 @@ public class MainActivity extends AppCompatActivity {
         handler.removeCallbacksAndMessages(null);
         seekBar.setProgress(0);
         actualizarSeekBar();
-
-        // Iniciar el contador de tiempo transcurrido
-        iniciarContador();
+        iniciarContadorYActualizarSeekBar();
     }
 
     // Método para cambiar entre modo aleatorio y no aleatorio
@@ -407,17 +326,14 @@ public class MainActivity extends AppCompatActivity {
 
             if (isRandom) {
                 btn_random.setBackgroundResource(R.drawable.random_on);
-                //Toast.makeText(this, "Modo aleatorio activado", Toast.LENGTH_SHORT).show();
-                playedPositions.clear(); // Limpiar la lista de posiciones reproducidas cuando se activa el modo aleatorio
+                playedPositions.clear();
             } else {
                 btn_random.setBackgroundResource(R.drawable.random_off);
-                //Toast.makeText(this, "Modo aleatorio desactivado", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-
-    // Método para cambiar el estado de "Like" de una canción
+    // Método para agregar a me gusta o eliminarlo de la lista de me gusta
     public void LikeNoLike(View view) {
         isLiked = !isLiked;
         if (isLiked) {
@@ -429,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Método para cambiar entre modo aleatorio y no aleatorio
+    // Método para agregar o eliminar de la lista de reproducción
     public void AddToList(View view) {
         if (vectormp[posicion] != null) {
             if (vectormp[posicion].isLooping()) {
@@ -492,49 +408,44 @@ public class MainActivity extends AppCompatActivity {
             vectormp[posicion].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
-                    if (vectormp[posicion].isLooping()) {
-                        // Si la canción está en modo de repetición, reiniciar la misma canción
-                        vectormp[posicion].seekTo(0);
-                        seekBar.setProgress(0);
-                        timerNegative.setText("00:00");
-                        play_pause.setBackgroundResource(R.drawable.pause);
-
-                        // Reiniciar la canción
-                        vectormp[posicion].start();
-                    } else {
-                        // Detener el MediaPlayer actual
+                    // Detener y liberar el MediaPlayer actual
+                    if (mp != null) {
                         mp.stop();
                         mp.release();
-                        mp = null;
-
-                        // Avanzar a la siguiente canción
-                        if (isRandom) {
-                            int newPosicion;
-                            do {
-                                newPosicion = random.nextInt(vectormp.length);
-                            } while (newPosicion == posicion || playedPositions.contains(newPosicion));
-                            posicion = newPosicion;
-                            playedPositions.add(posicion);
-                            if (playedPositions.size() == vectormp.length) {
-                                playedPositions.clear();
-                            }
-                        } else {
-                            posicion = (posicion + 1) % vectormp.length;
-                        }
-
-                        // Crear y comenzar el nuevo MediaPlayer para la siguiente canción
-                        vectormp[posicion] = MediaPlayer.create(MainActivity.this, getMediaResource(posicion));
-                        vectormp[posicion].start();
-                        play_pause.setBackgroundResource(R.drawable.pause);
-
-                        // Actualizar la imagen y el título de la nueva canción
-                        actualizarImagen();
-                        updateSongTitle();
-                        actualizarDuracionTotal();
-                        handler.removeCallbacksAndMessages(null);
-                        seekBar.setProgress(0);
-                        actualizarSeekBar();
+                        vectormp[posicion] = null;
                     }
+
+                    // Avanzar a la siguiente canción
+                    if (isRandom) {
+                        int newPosicion;
+                        do {
+                            newPosicion = random.nextInt(vectormp.length);
+                        } while (newPosicion == posicion || playedPositions.contains(newPosicion));
+                        posicion = newPosicion;
+                        playedPositions.add(posicion);
+                        if (playedPositions.size() == vectormp.length) {
+                            playedPositions.clear();
+                        }
+                    } else {
+                        posicion = (posicion + 1) % vectormp.length;
+                    }
+
+                    // Crear y comenzar el nuevo MediaPlayer para la siguiente canción
+                    vectormp[posicion] = MediaPlayer.create(MainActivity.this, getMediaResource(posicion));
+                    vectormp[posicion].start();
+                    play_pause.setBackgroundResource(R.drawable.pause);
+
+                    // Actualizar la imagen y el título de la nueva canción
+                    actualizarImagen();
+                    updateSongTitle();
+                    actualizarDuracionTotal();
+
+                    // Eliminar todos los callbacks y mensajes del handler
+                    handler.removeCallbacks(updateSeekBar);
+
+                    // Actualizar la SeekBar
+                    seekBar.setProgress(0);
+                    actualizarSeekBar();
                 }
             });
         }
@@ -548,15 +459,12 @@ public class MainActivity extends AppCompatActivity {
             timerAbsolute.setText(durationString);
         }
     }
-
     // Añadir el método para formatear la duración
     private String formatDuration(int duration) {
         long minutes = TimeUnit.MILLISECONDS.toMinutes(duration);
         long seconds = TimeUnit.MILLISECONDS.toSeconds(duration) % 60;
         return String.format("%02d:%02d", minutes, seconds);
     }
-
-
     // Runnable para actualizar la seekbar cada segundo
     private Runnable updateSeekBar = new Runnable() {
         @Override
@@ -567,7 +475,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-
     private void updateSongTitle() {
         if (posicion >= 0 && posicion < songTitles.size()) {
             titleSong.setText(songTitles.get(posicion));
@@ -584,14 +491,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    //Cerrar la app con boton de regresar
-    public void Back(View view) {
-        finishAffinity();
-    }
-    @Override
-    protected void onStop() {
-        super.onStop();
-        handler.removeCallbacks(runnable);
-    }
 }
-
