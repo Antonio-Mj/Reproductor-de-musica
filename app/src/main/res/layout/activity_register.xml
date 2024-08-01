@@ -36,7 +36,8 @@
             android:id="@+id/usernameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            app:boxStrokeColor="@color/blue_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/name"
@@ -50,7 +51,8 @@
             android:id="@+id/addresslLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            app:boxStrokeColor="@color/blue_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/address"
@@ -64,7 +66,8 @@
             android:id="@+id/dateOfBirthLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            app:boxStrokeColor="@color/blue_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/dateOfBirth"
@@ -81,7 +84,8 @@
             android:id="@+id/emailLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            app:boxStrokeColor="@color/blue_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/email"
@@ -95,7 +99,8 @@
             android:id="@+id/passwordLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            app:boxStrokeColor="@color/blue_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password"
@@ -110,7 +115,8 @@
             android:id="@+id/confirmPasswordLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp">
+            android:layout_marginBottom="24dp"
+            app:boxStrokeColor="@color/blue_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/confirmPassword"

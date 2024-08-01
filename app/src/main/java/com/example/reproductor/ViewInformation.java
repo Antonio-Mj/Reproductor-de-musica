@@ -3,12 +3,11 @@ package com.example.reproductor;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,8 +20,8 @@ import com.google.firebase.database.ValueEventListener;
 
 public class ViewInformation extends AppCompatActivity {
 
-    private EditText etUsername, etEmail, etAddress, etBirthday;
-    private Button btnSave, btnBack, btnDelete;
+    EditText etUsername, etEmail, etAddress, etBirthday;
+    Button btnSave, btnBack, btnDelete;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
 
@@ -47,7 +46,7 @@ public class ViewInformation extends AppCompatActivity {
             String userId = user.getUid();
             mDatabase.child("users").child(userId).addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     User userProfile = dataSnapshot.getValue(User.class);
                     if (userProfile != null) {
                         etUsername.setText(userProfile.username);
@@ -58,7 +57,7 @@ public class ViewInformation extends AppCompatActivity {
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
+                public void onCancelled(@NonNull DatabaseError databaseError) {
                     //Toast.makeText(ViewInformation.this, "Failed to load user data.", Toast.LENGTH_SHORT).show();
                 }
             });

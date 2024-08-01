@@ -1,0 +1,7 @@
+<!-- res/values/styles.xml -->
+<resources>
+    <!-- Define un estilo para el contorno de TextInputLayout -->
+    <style name="CustomTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/blue_text</item>
+    </style>
+</resources>
