@@ -101,40 +101,40 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             app:boxStrokeColor="@color/blue_text"
+            app:endIconContentDescription="@string/show_hide_password"
             app:endIconMode="password_toggle"
-            app:endIconTint="@color/blue_text"
-            app:endIconContentDescription="@string/show_hide_password">
+            app:endIconTint="@color/blue_text">
 
             <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/password"
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:textColor="@color/blue_text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/confirmPasswordLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:textColor="@color/blue_text" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginBottom="24dp"
+            app:boxStrokeColor="@color/blue_text"
+            app:endIconContentDescription="@string/show_hide_password"
+            app:endIconMode="password_toggle"
+            app:endIconTint="@color/blue_text">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/confirmPasswordLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        app:boxStrokeColor="@color/blue_text"
-        app:endIconMode="password_toggle"
-        app:endIconTint="@color/blue_text"
-        app:endIconContentDescription="@string/show_hide_password">
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/confirmPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Confirm Password"
-        android:inputType="textPassword"
-        android:textColor="@color/blue_text" />
-</com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/confirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Confirm Password"
+                android:inputType="textPassword"
+                android:textColor="@color/blue_text" />
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-<ProgressBar
+        <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

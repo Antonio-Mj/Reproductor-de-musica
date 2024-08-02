@@ -25,7 +25,7 @@ import java.util.Calendar;
 public class Register extends AppCompatActivity {
 
     TextInputEditText editTextEmail, editTextPassword, editTextConfirmPassword, editTextUsername, editTextAddress, editTextDateOfBirth;
-    TextInputLayout passwordLayout, confirmPasswordLayout, usernameLayout,addressLayout, dateOfBirthLayout;
+    TextInputLayout passwordLayout, confirmPasswordLayout, usernameLayout, addressLayout, dateOfBirthLayout;
     Button btnRegister;
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
