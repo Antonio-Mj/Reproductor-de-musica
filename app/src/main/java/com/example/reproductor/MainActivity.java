@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         // Inicialización de los elementos de la interfaz
         play_pause = findViewById(R.id.btn_play);
         btn_repetir = findViewById(R.id.btn_norepetir);
@@ -123,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                // Opcional: Puedes hacer algo cuando el usuario deja de mover la seekbar
             }
         });
 
@@ -209,18 +210,19 @@ public class MainActivity extends AppCompatActivity {
         vectormp[7] = MediaPlayer.create(this, R.raw.pista_ocho);
     }
 
+
     // Método para reproducir o pausar la canción
     public void PlayPause(View view) {
         if (vectormp[posicion].isPlaying()) {
             // Si la canción está reproduciéndose, pausarla
             vectormp[posicion].pause();
-            play_pause.setBackgroundResource(R.drawable.play);
+            play_pause.setBackgroundResource(R.drawable.ic_play);
             // Detener el contador y la actualización de la seekbar
             handler.removeCallbacks(updateSeekBar);
         } else {
             // Si la canción está pausada, iniciarla
             vectormp[posicion].start();
-            play_pause.setBackgroundResource(R.drawable.pause);
+            play_pause.setBackgroundResource(R.drawable.ic_pause);
             // Actualizar la seekbar y el contador
             actualizarDuracionTotal();
             iniciarContadorYActualizarSeekBar();
@@ -232,10 +234,10 @@ public class MainActivity extends AppCompatActivity {
         if (vectormp[posicion] != null) {
             if (vectormp[posicion].isLooping()) {
                 vectormp[posicion].setLooping(false);
-                btn_repetir.setBackgroundResource(R.drawable.repeat);
+                btn_repetir.setBackgroundResource(R.drawable.ic_repeat_off);
             } else {
                 vectormp[posicion].setLooping(true);
-                btn_repetir.setBackgroundResource(R.drawable.repeat_1);
+                btn_repetir.setBackgroundResource(R.drawable.ic_repeat_on);
             }
         } else {
         }
@@ -271,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
 
         vectormp[posicion] = MediaPlayer.create(this, getMediaResource(posicion));
         vectormp[posicion].start();
-        play_pause.setBackgroundResource(R.drawable.pause);
+        play_pause.setBackgroundResource(R.drawable.ic_pause);
 
         // Actualizar la imagen asociada a la canción actual
         actualizarImagen();
@@ -319,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
 
         vectormp[posicion] = MediaPlayer.create(this, getMediaResource(posicion));
         vectormp[posicion].start();
-        play_pause.setBackgroundResource(R.drawable.pause);
+        play_pause.setBackgroundResource(R.drawable.ic_pause);
         actualizarImagen();
         updateSongTitle();
         actualizarDuracionTotal();
@@ -334,10 +336,10 @@ public class MainActivity extends AppCompatActivity {
             isRandom = !isRandom;
 
             if (isRandom) {
-                btn_random.setBackgroundResource(R.drawable.random_on);
+                btn_random.setBackgroundResource(R.drawable.ic_random_on);
                 playedPositions.clear();
             } else {
-                btn_random.setBackgroundResource(R.drawable.random_off);
+                btn_random.setBackgroundResource(R.drawable.ic_random_off);
             }
         }
     }
@@ -346,10 +348,10 @@ public class MainActivity extends AppCompatActivity {
     public void LikeNoLike(View view) {
         isLiked = !isLiked;
         if (isLiked) {
-            btn_like.setBackgroundResource(R.drawable.like_on);
+            btn_like.setBackgroundResource(R.drawable.ic_like_add);
             //Toast.makeText(this, "Se ha añadido a tus 'Me gusta'", Toast.LENGTH_SHORT).show();
         } else {
-            btn_like.setBackgroundResource(R.drawable.like_off);
+            btn_like.setBackgroundResource(R.drawable.ic_like);
             //Toast.makeText(this, "Se ha eliminado de tus 'Me gusta'", Toast.LENGTH_SHORT).show();
         }
     }
@@ -359,11 +361,11 @@ public class MainActivity extends AppCompatActivity {
         if (vectormp[posicion] != null) {
             if (vectormp[posicion].isLooping()) {
                 vectormp[posicion].setLooping(false);
-                btn_addlist.setBackgroundResource(R.drawable.playlist_add);
+                btn_addlist.setBackgroundResource(R.drawable.ic_playlist_off);
                 //Toast.makeText(this, "Se ha borrado de tu lista", Toast.LENGTH_SHORT).show();
             } else {
                 vectormp[posicion].setLooping(true);
-                btn_addlist.setBackgroundResource(R.drawable.playlist_add_check);
+                btn_addlist.setBackgroundResource(R.drawable.ic_playlist_add);
                 //Toast.makeText(this, "Se ha añadido a tu lista", Toast.LENGTH_SHORT).show();
             }
         }

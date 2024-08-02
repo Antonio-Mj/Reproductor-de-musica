@@ -13,7 +13,7 @@ public class Home extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        ImageView imageView = findViewById(R.id.imageViewpp);
+        ImageView imageView = findViewById(R.id.imageView_1);
         ImageView profileImage = findViewById(R.id.profile_image);
 
         imageView.setOnClickListener(v -> {

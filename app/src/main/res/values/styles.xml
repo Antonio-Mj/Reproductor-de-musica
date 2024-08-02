@@ -4,4 +4,14 @@
     <style name="CustomTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">@color/blue_text</item>
     </style>
+
+    <style name="CircleImageView">
+        <item name="shapeAppearanceOverlay">@style/CircleImageViewStyle</item>
+    </style>
+
+    <style name="CircleImageViewStyle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>
