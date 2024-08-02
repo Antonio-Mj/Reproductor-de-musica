@@ -241,62 +241,91 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Método para saltar a la siguiente canción
+    // Método para avanzar a la siguiente canción
     public void Siguiente(View view) {
         if (vectormp[posicion] != null) {
-            if (posicion < vectormp.length - 1) {
-                vectormp[posicion].stop();
-                vectormp[posicion].release();
-                posicion++;
-                updateSongTitle();
-                vectormp[posicion] = MediaPlayer.create(this, getResources().getIdentifier("pista_" + (posicion + 1), "raw", getPackageName()));
-                vectormp[posicion].start();
-                play_pause.setBackgroundResource(R.drawable.pause);
-                actualizarImagen();
-                actualizarDuracionTotal();
-                iniciarContadorYActualizarSeekBar();
-            } else {
-                vectormp[posicion].stop();
-                vectormp[posicion].release();
-                posicion = 0;
-                updateSongTitle();
-                vectormp[posicion] = MediaPlayer.create(this, getResources().getIdentifier("pista_" + (posicion + 1), "raw", getPackageName()));
-                vectormp[posicion].start();
-                play_pause.setBackgroundResource(R.drawable.pause);
-                actualizarImagen();
-                actualizarDuracionTotal();
-                iniciarContadorYActualizarSeekBar();
-            }
+            vectormp[posicion].stop();
+            vectormp[posicion].release();
+            vectormp[posicion] = null;
         }
+
+        if (isRandom) {
+            int newPosicion;
+            do {
+                newPosicion = random.nextInt(vectormp.length);
+            } while (newPosicion == posicion || playedPositions.contains(newPosicion));
+            posicion = newPosicion;
+            playedPositions.add(posicion);
+            if (playedPositions.size() == vectormp.length) {
+                playedPositions.clear();
+            }
+        } else {
+            posicion = (posicion + 1) % vectormp.length;
+        }
+
+        // Reiniciar el contador de tiempo transcurrido
+        timerNegative.setText("00:00");
+
+        // Actualizar el título de la canción
+        updateSongTitle();
+
+        vectormp[posicion] = MediaPlayer.create(this, getMediaResource(posicion));
+        vectormp[posicion].start();
+        play_pause.setBackgroundResource(R.drawable.pause);
+
+        // Actualizar la imagen asociada a la canción actual
+        actualizarImagen();
+
+        actualizarDuracionTotal();
+        handler.removeCallbacksAndMessages(null);
+        seekBar.setProgress(0);
+
+
+        // Iniciar el contador de tiempo transcurrido
+        iniciarContadorYActualizarSeekBar();
     }
 
-    // Método para saltar a la canción anterior
+    // Método para retroceder a la canción anterior
     public void Anterior(View view) {
         if (vectormp[posicion] != null) {
-            if (posicion > 0) {
-                vectormp[posicion].stop();
-                vectormp[posicion].release();
-                posicion--;
-                updateSongTitle();
-                vectormp[posicion] = MediaPlayer.create(this, getResources().getIdentifier("pista_" + (posicion + 1), "raw", getPackageName()));
-                vectormp[posicion].start();
-                play_pause.setBackgroundResource(R.drawable.pause);
-                actualizarImagen();
-                actualizarDuracionTotal();
-                iniciarContadorYActualizarSeekBar();
+            vectormp[posicion].stop();
+            vectormp[posicion].release();
+            vectormp[posicion] = null;
+        }
+
+        if (isRandom) {
+            if (playedPositions.size() > 0) {
+                playedPositions.remove(playedPositions.size() - 1);
+            }
+            if (playedPositions.size() == 0) {
+                int newPosicion;
+                do {
+                    newPosicion = random.nextInt(vectormp.length);
+                } while (newPosicion == posicion);
+                posicion = newPosicion;
             } else {
-                vectormp[posicion].stop();
-                vectormp[posicion].release();
+                posicion = playedPositions.get(playedPositions.size() - 1);
+            }
+        } else {
+            if (posicion > 0) {
+                posicion--;
+            } else {
                 posicion = vectormp.length - 1;
-                updateSongTitle();
-                vectormp[posicion] = MediaPlayer.create(this, getResources().getIdentifier("pista_" + (posicion + 1), "raw", getPackageName()));
-                vectormp[posicion].start();
-                play_pause.setBackgroundResource(R.drawable.pause);
-                actualizarImagen();
-                actualizarDuracionTotal();
-                iniciarContadorYActualizarSeekBar();
             }
         }
+
+        // Reiniciar el contador de tiempo transcurrido
+        timerNegative.setText("00:00");
+
+        vectormp[posicion] = MediaPlayer.create(this, getMediaResource(posicion));
+        vectormp[posicion].start();
+        play_pause.setBackgroundResource(R.drawable.pause);
+        actualizarImagen();
+        updateSongTitle();
+        actualizarDuracionTotal();
+        handler.removeCallbacksAndMessages(null);
+        seekBar.setProgress(0);
+        iniciarContadorYActualizarSeekBar();
     }
 
     // Método para cambiar entre modo aleatorio y no aleatorio
