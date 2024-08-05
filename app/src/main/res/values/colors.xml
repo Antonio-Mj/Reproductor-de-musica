@@ -16,7 +16,7 @@
     <color name="darkgray">#A9A9A9</color>
     <color name="lightgray">#D3D3D3</color>
     <color name="transparent">#00000000</color>
-    <color name="blue_buttons">#4664C8</color>
-    <color name="blue_text">#4664C8</color>
-    <color name="blue_border">#4664C8</color>
+    <color name="blue_buttons">#40E0D0</color>
+    <color name="blue_text">#40E0D0</color>
+    <color name="blue_border">#40E0D0</color>
 </resources>

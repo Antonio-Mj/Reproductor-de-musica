@@ -32,8 +32,9 @@ public class MainActivity extends AppCompatActivity {
     Button play_pause, btn_repetir, btn_anterior, btn_siguiente, btn_random, btn_like, btn_addlist;
     SeekBar seekBar;
     ImageView iv;
-    TextView timerAbsolute, timerNegative, titleSong;
+    TextView timerAbsolute, timerNegative, titleSong, nameArtist;
     private List<String> songTitles;
+    private List<String> artistNames;
     int posicion = 0;
     MediaPlayer[] vectormp = new MediaPlayer[8];
     int position = 0;
@@ -50,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-
         // Inicialización de los elementos de la interfaz
         play_pause = findViewById(R.id.btn_play);
         btn_repetir = findViewById(R.id.btn_norepetir);
@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         btn_random = findViewById(R.id.btn_random);
         seekBar = findViewById(R.id.seekBar);
         titleSong = findViewById(R.id.title_song);
+        nameArtist = findViewById(R.id.title_artist);
         iv = findViewById(R.id.imageView);
         timerAbsolute = findViewById(R.id.timer_absolute);
         timerNegative = findViewById(R.id.timer_negative);
@@ -81,14 +82,25 @@ public class MainActivity extends AppCompatActivity {
 
         // Lista de títulos de canciones
         songTitles = new ArrayList<>();
-        songTitles.add("Paint it black - Rolling Stones");
-        songTitles.add("Hielo - Eladio Carrionn");
-        songTitles.add("NI BIEN NI MAL - Bad Bunny");
-        songTitles.add("Carta de despedida - Lit Killah");
-        songTitles.add("BÉSAME REMIX - Tiago PZK");
-        songTitles.add("Una noche más - Panther");
-        songTitles.add("Además de mi - Duki");
-        songTitles.add("She don't give a fo - Duki");
+        songTitles.add("Paint it black");
+        songTitles.add("Hielo");
+        songTitles.add("Ni bien ni mal");
+        songTitles.add("Carta de despedida");
+        songTitles.add("Bésame remix");
+        songTitles.add("Una noche más");
+        songTitles.add("Además de mi ");
+        songTitles.add("She don't give a fo");
+
+        // Lista de nombres de artistas
+        artistNames = new ArrayList<>();
+        artistNames.add("The Rolling Stones");
+        artistNames.add("Eladio Carrion, JHAYCO");
+        artistNames.add("Bad Bunny");
+        artistNames.add("LIT Killah, Milo j, RONNY J");
+        artistNames.add("Bhavi, Seven Kayne, Milo j, Tiago PZK, KHEA, Neo Pistea");
+        artistNames.add("Lautaro López, Panther");
+        artistNames.add("Rusherking, KHEA, Duki, Maria Becerra, LIT Killah, Tiago PZK");
+        artistNames.add("Duki, KHEA");
 
         // Inicialización del índice de la canción actual
         posicion = 0;
@@ -209,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
         vectormp[6] = MediaPlayer.create(this, R.raw.pista_siete);
         vectormp[7] = MediaPlayer.create(this, R.raw.pista_ocho);
     }
-
 
     // Método para reproducir o pausar la canción
     public void PlayPause(View view) {
@@ -416,12 +427,14 @@ public class MainActivity extends AppCompatActivity {
             timerAbsolute.setText(durationString);
         }
     }
+
     // Añadir el método para formatear la duración
     private String formatDuration(int duration) {
         long minutes = TimeUnit.MILLISECONDS.toMinutes(duration);
         long seconds = TimeUnit.MILLISECONDS.toSeconds(duration) % 60;
         return String.format("%02d:%02d", minutes, seconds);
     }
+
     // Runnable para actualizar la seekbar cada segundo
     private Runnable updateSeekBar = new Runnable() {
         @Override
@@ -432,11 +445,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
     private void updateSongTitle() {
         if (posicion >= 0 && posicion < songTitles.size()) {
             titleSong.setText(songTitles.get(posicion));
+            nameArtist.setText(artistNames.get(posicion)); // Actualiza el nombre del artista
         }
     }
+
     // Limpiar recursos al destruir la actividad
     @Override
     protected void onDestroy() {

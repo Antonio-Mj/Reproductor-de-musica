@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@color/white"
     tools:context=".Home">
 
     <ScrollView
@@ -21,9 +21,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="23dp"
-                android:background="@color/black"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
+                android:background="@color/white"
                 android:padding="8dp">
 
                 <ImageView
@@ -88,7 +88,7 @@
                         android:contentDescription="@string/imagen1"
                         android:src="@drawable/song1" />
 
-                    <ImageView
+                    <!--<ImageView
                         android:id="@+id/imageView_2"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
@@ -142,7 +142,7 @@
                         android:layout_height="150dp"
                         android:layout_marginEnd="8dp"
                         android:contentDescription="@string/imagen8"
-                        android:src="@drawable/song8" />
+                        android:src="@drawable/song8" /> -->
 
                 </LinearLayout>
             </HorizontalScrollView>
@@ -183,7 +183,7 @@
                             android:contentDescription="artist1"
                             android:scaleType="centerCrop"
                             android:src="@drawable/anuel" />
-                    </androidx.cardview.widget.CardView>
+                   <!-- </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="80dp"
@@ -310,7 +310,7 @@
                             android:layout_height="match_parent"
                             android:contentDescription="artist6"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/laele" />
+                            android:src="@drawable/laele" />-->
                     </androidx.cardview.widget.CardView>
 
                 </LinearLayout>
@@ -346,7 +346,7 @@
                         android:contentDescription="podcast1"
                         android:src="@drawable/clase" />
 
-                    <ImageView
+                    <!-- <ImageView
                         android:layout_width="150dp"
                         android:layout_height="150dp"
                         android:layout_marginEnd="8dp"
@@ -393,7 +393,7 @@
                         android:layout_height="150dp"
                         android:layout_marginEnd="8dp"
                         android:contentDescription="podcast8"
-                        android:src="@drawable/song8" />
+                        android:src="@drawable/song8" /> -->
 
                 </LinearLayout>
             </HorizontalScrollView>
@@ -436,7 +436,7 @@
                             android:src="@drawable/anuel" />
                     </androidx.cardview.widget.CardView>
 
-                    <androidx.cardview.widget.CardView
+                    <!--<androidx.cardview.widget.CardView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:layout_marginEnd="8dp"
@@ -562,7 +562,7 @@
                             android:contentDescription="artist6"
                             android:scaleType="centerCrop"
                             android:src="@drawable/laele" />
-                    </androidx.cardview.widget.CardView>
+                    </androidx.cardview.widget.CardView> -->
 
                 </LinearLayout>
             </HorizontalScrollView>
@@ -575,7 +575,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
-        android:background="@color/black"
+        android:background="@color/white"
         android:gravity="center_vertical"
         android:layout_alignParentBottom="true">
 
