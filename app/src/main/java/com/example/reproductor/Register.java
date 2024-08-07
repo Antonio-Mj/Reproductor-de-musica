@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,13 +27,15 @@ import java.util.Calendar;
 
 public class Register extends AppCompatActivity {
 
-    TextInputEditText editTextEmail, editTextPassword, editTextConfirmPassword, editTextUsername, editTextAddress, editTextDateOfBirth;
-    TextInputLayout passwordLayout, confirmPasswordLayout, usernameLayout, addressLayout, dateOfBirthLayout;
+    TextInputEditText editTextEmail, editTextPassword, editTextConfirmPassword, editTextUsername, editTextDateOfBirth;
+    TextInputLayout passwordLayout, confirmPasswordLayout, usernameLayout, dateOfBirthLayout;
+    Spinner spinnerCountry;
     Button btnRegister;
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
     ProgressBar progressBar;
     TextView textView;
+    String selectedCountry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +56,28 @@ public class Register extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         textView = findViewById(R.id.loginNow);
         editTextUsername = findViewById(R.id.name);
-        editTextAddress = findViewById(R.id.address);
         editTextDateOfBirth = findViewById(R.id.dateOfBirth);
-        addressLayout = findViewById(R.id.addresslLayout);
         dateOfBirthLayout = findViewById(R.id.dateOfBirthLayout);
         usernameLayout = findViewById(R.id.usernameLayout);
+        spinnerCountry = findViewById(R.id.country_spinner);
+
+        // Spinner para países usando un array
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.countries_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCountry.setAdapter(adapter);
+
+        spinnerCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedCountry = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                selectedCountry = null;
+            }
+        });
 
         // Configurar DatePickerDialog
         editTextDateOfBirth.setOnClickListener(v -> {
@@ -67,7 +89,6 @@ public class Register extends AppCompatActivity {
             DatePickerDialog datePickerDialog = new DatePickerDialog(
                     Register.this,
                     (view, selectedYear, selectedMonth, selectedDay) -> {
-                        // Validar que la fecha seleccionada esté dentro del rango permitido
                         if (selectedYear >= 1950 && selectedYear <= year) {
                             String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
                             editTextDateOfBirth.setText(selectedDate);
@@ -91,7 +112,6 @@ public class Register extends AppCompatActivity {
             String username = String.valueOf(editTextUsername.getText());
             String password = String.valueOf(editTextPassword.getText());
             String confirmPassword = String.valueOf(editTextConfirmPassword.getText());
-            String address = String.valueOf(editTextAddress.getText());
             String dateOfBirth = String.valueOf(editTextDateOfBirth.getText());
 
             if (TextUtils.isEmpty(email)) {
@@ -109,8 +129,8 @@ public class Register extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 return;
             }
-            if (TextUtils.isEmpty(address)) {
-                Toast.makeText(Register.this, "Enter address", Toast.LENGTH_SHORT).show();
+            if (TextUtils.isEmpty(selectedCountry)) {
+                Toast.makeText(Register.this, "Select a country", Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
                 return;
             }
@@ -135,9 +155,8 @@ public class Register extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
-                                // Guarda los datos en Firebase Realtime Database
                                 String userId = user.getUid();
-                                User userProfile = new User(username, email, password, address, dateOfBirth);
+                                User userProfile = new User(username, email, password, selectedCountry, dateOfBirth);
                                 mDatabase.child("users").child(userId).setValue(userProfile)
                                         .addOnCompleteListener(task1 -> {
                                             if (task1.isSuccessful()) {
@@ -165,20 +184,19 @@ public class Register extends AppCompatActivity {
         });
     }
 
-
     // Clase interna para almacenar la información del usuario
     public static class User {
         public String username;
         public String email;
         public String password;
-        public String address;
+        public String country;
         public String dateOfBirth;
 
-        public User(String username, String email, String password, String address, String dateOfBirth) {
+        public User(String username, String email, String password, String country, String dateOfBirth) {
             this.username = username;
             this.email = email;
             this.password = password;
-            this.address = address;
+            this.country = country;
             this.dateOfBirth = dateOfBirth;
         }
     }

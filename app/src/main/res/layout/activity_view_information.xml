@@ -72,6 +72,8 @@
                 android:focusable="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
+
+        <!-- Spinner para seleccionar el país -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -80,12 +82,10 @@
             android:layout_marginEnd="16dp"
             app:boxStrokeColor="@color/blue_text">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etAddress"
+            <Spinner
+                android:id="@+id/spinnerCountry"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Address"
-                android:textSize="18sp" />
+                android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout

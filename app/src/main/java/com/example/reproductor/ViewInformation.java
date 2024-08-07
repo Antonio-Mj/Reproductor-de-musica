@@ -3,8 +3,12 @@ package com.example.reproductor;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,12 +22,18 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ViewInformation extends AppCompatActivity {
 
-    EditText etUsername, etEmail, etAddress, etBirthday;
+    EditText etUsername, etEmail, etBirthday;
+    Spinner spinnerCountry;
     Button btnSave, btnBack, btnDelete;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
+    private ArrayAdapter<String> adapter;
+    private String selectedCountry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +42,7 @@ public class ViewInformation extends AppCompatActivity {
 
         etUsername = findViewById(R.id.etUsername);
         etEmail = findViewById(R.id.etEmail);
-        etAddress = findViewById(R.id.etAddress);
+        spinnerCountry = findViewById(R.id.spinnerCountry);
         etBirthday = findViewById(R.id.etBirthday);
         btnSave = findViewById(R.id.btnSave);
         btnBack = findViewById(R.id.btnBack);
@@ -40,6 +50,33 @@ public class ViewInformation extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        // Configurar el adaptador para el Spinner usando un array de recursos
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new ArrayList<>());
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCountry.setAdapter(adapter);
+
+        // Obtener la lista de países desde los recursos
+        String[] countries = getResources().getStringArray(R.array.countries_array);
+        List<String> countryList = new ArrayList<>();
+        for (String country : countries) {
+            countryList.add(country);
+        }
+        adapter.clear();
+        adapter.addAll(countryList);
+        adapter.notifyDataSetChanged();
+
+        spinnerCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedCountry = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                selectedCountry = null;
+            }
+        });
 
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
@@ -51,14 +88,17 @@ public class ViewInformation extends AppCompatActivity {
                     if (userProfile != null) {
                         etUsername.setText(userProfile.username);
                         etEmail.setText(userProfile.email);
-                        etAddress.setText(userProfile.address);
                         etBirthday.setText(userProfile.dateOfBirth);
+                        if (userProfile.country != null) {
+                            int spinnerPosition = adapter.getPosition(userProfile.country);
+                            spinnerCountry.setSelection(spinnerPosition);
+                        }
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    //Toast.makeText(ViewInformation.this, "Failed to load user data.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ViewInformation.this, "Failed to load user data.", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -77,10 +117,9 @@ public class ViewInformation extends AppCompatActivity {
     private void saveUserInformation() {
         String username = etUsername.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
-        String address = etAddress.getText().toString().trim();
         String dateOfBirth = etBirthday.getText().toString().trim();
 
-        if (username.isEmpty() || email.isEmpty() || address.isEmpty() || dateOfBirth.isEmpty()) {
+        if (username.isEmpty() || email.isEmpty() || selectedCountry == null || dateOfBirth.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -88,7 +127,7 @@ public class ViewInformation extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             String userId = user.getUid();
-            User updatedUser = new User(username, email, address, dateOfBirth);
+            User updatedUser = new User(username, email, selectedCountry, dateOfBirth);
             mDatabase.child("users").child(userId).setValue(updatedUser)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
@@ -140,17 +179,17 @@ public class ViewInformation extends AppCompatActivity {
     public static class User {
         public String username;
         public String email;
-        public String address;
+        public String country;
         public String dateOfBirth;
 
         public User() {
             // Constructor vacío necesario para Firebase
         }
 
-        public User(String username, String email, String address, String dateOfBirth) {
+        public User(String username, String email, String country, String dateOfBirth) {
             this.username = username;
             this.email = email;
-            this.address = address;
+            this.country = country;
             this.dateOfBirth = dateOfBirth;
         }
     }
