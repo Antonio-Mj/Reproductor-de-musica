@@ -44,11 +44,24 @@ public class Login extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if (currentUser != null && currentUser.isEmailVerified()) {
-            Intent intent = new Intent(getApplicationContext(), Home.class);
-            startActivity(intent);
-            finish();
+            // Check if profile picture has been uploaded
+            boolean isProfilePictureUploaded = getSharedPreferences("userPrefs", MODE_PRIVATE)
+                    .getBoolean("profilePictureUploaded", false);
+
+            if (isProfilePictureUploaded) {
+                // If profile picture is uploaded, go directly to Home
+                Intent intent = new Intent(getApplicationContext(), Home.class);
+                startActivity(intent);
+                finish();
+            } else {
+                // Otherwise, go to profile picture activity
+                Intent intent = new Intent(getApplicationContext(), ProfilePicture.class);
+                startActivity(intent);
+                finish();
+            }
         }
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +142,6 @@ public class Login extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 if (user != null && user.isEmailVerified()) {
-//                                    Toast.makeText(Login.this, "", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(getApplicationContext(), Home.class);
                                     startActivity(intent);
                                     finish();

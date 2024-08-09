@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -14,47 +15,44 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Material3.Light"
         tools:targetApi="31">
-
+        <activity
+            android:name=".ProfilePicture"
+            android:exported="false"
+            android:theme="@style/Theme.Reproductor.NoActionBar"/>
         <activity
             android:name=".SplashScreen"
             android:exported="true"
             android:theme="@style/Theme.Reproductor.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ViewInformation"
             android:exported="false"
             android:theme="@style/Theme.Reproductor.NoActionBar" />
-
         <activity
             android:name=".Settings"
             android:exported="false"
             android:theme="@style/Theme.Reproductor.NoActionBar" />
-
         <activity
             android:name=".ResetPassword"
             android:exported="false"
             android:theme="@style/Theme.Reproductor.NoActionBar" />
-
         <activity
             android:name=".Home"
             android:exported="false"
             android:theme="@style/Theme.Reproductor.NoActionBar" />
-
         <activity
             android:name=".Register"
             android:exported="true"
             android:theme="@style/Theme.Reproductor.NoActionBar" />
-
         <activity
             android:name=".Login"
             android:exported="true"
             android:theme="@style/Theme.Reproductor.NoActionBar" />
-
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -67,7 +65,6 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
     </application>
 
 </manifest>

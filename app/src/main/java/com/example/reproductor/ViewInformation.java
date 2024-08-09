@@ -161,7 +161,7 @@ public class ViewInformation extends AppCompatActivity {
                             user.delete().addOnCompleteListener(task2 -> {
                                 if (task2.isSuccessful()) {
                                     Toast.makeText(ViewInformation.this, "Account deleted successfully", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(ViewInformation.this, MainActivity.class);
+                                    Intent intent = new Intent(ViewInformation.this, Login.class);
                                     startActivity(intent);
                                     finish();
                                 } else {

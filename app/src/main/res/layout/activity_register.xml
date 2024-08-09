@@ -58,7 +58,8 @@
                 android:id="@+id/country_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:entries="@array/countries_array" />
+                android:entries="@array/countries_array"
+                tools:ignore="TouchTargetSizeCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
